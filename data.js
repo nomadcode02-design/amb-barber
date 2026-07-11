@@ -17,4 +17,4 @@ const HORARIO_CIERRE = "21:00";
 const DIAS_ATENCION = [1,2,3,4,5,6]; // 0=domingo ... 6=sábado (cerrado domingo)
 
 // URL del backend del bot (se completa cuando esté desplegado)
-const API_URL = "https://TU-BACKEND-EN-RAILWAY.up.railway.app/api/reservar";
+const API_URL = "https://amb-bot-production.up.railway.app/api/reservar";
