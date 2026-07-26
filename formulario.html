@@ -113,7 +113,16 @@
   // Horarios disponibles según franja de atención (cada 30 min)
   const diaInput = document.getElementById('dia');
   const horarioSel = document.getElementById('horario');
-  diaInput.min = new Date().toISOString().split('T')[0];
+
+  // Fecha de hoy en formato YYYY-MM-DD usando hora LOCAL (no UTC), para que
+  // no salte al día siguiente cuando ya es de noche en Argentina.
+  function fechaLocalISO(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${dia}`;
+  }
+  diaInput.min = fechaLocalISO(new Date());
 
   diaInput.addEventListener('change', () => {
     const fecha = new Date(diaInput.value + 'T00:00:00');
@@ -121,6 +130,9 @@
     horarioSel.innerHTML = '';
     if (!DIAS_ATENCION.includes(dow)) {
       const opt = document.createElement('option');
+      opt.value = '';
+      opt.disabled = true;
+      opt.selected = true;
       opt.textContent = 'Cerrado ese día';
       horarioSel.appendChild(opt);
       return;
@@ -130,6 +142,7 @@
     let t = hIni*60+mIni;
     const fin = hFin*60+mFin;
     const first = document.createElement('option');
+    first.value = ''; // vacío a propósito: así 'required' detecta que no se eligió nada
     first.disabled = true; first.selected = true; first.textContent = 'Elegí un horario';
     horarioSel.appendChild(first);
     while (t < fin) {
