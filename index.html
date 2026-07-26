@@ -14,36 +14,58 @@
 <header>
   <div class="nav wrap">
     <a href="index.html" class="brand">
-      <img src="https://placehold.co/76x76/1c1a17/b8874a?text=AMB&font=oswald" alt="AMB BARBERS">
+      <img src="https://placehold.co/76x76/0a0a0a/f5f5f3?text=AMB&font=oswald" alt="AMB BARBERS">
       <span>AMB BARBERS</span>
     </a>
-    <a class="cta" href="formulario.html">Reservar turno</a>
+    <a class="cta" href="formulario.html">Sacar turno</a>
   </div>
 </header>
 <div class="stripe"></div>
 
 <section class="hero">
-  <div class="wrap">
-    <div class="eyebrow">San Juan · Santa Rosa - 25 de Mayo</div>
-    <h1>Construimos<br><em>presencia.</em></h1>
-    <p>No solo cortamos el pelo. La primera impresión sucede en segundos — un buen corte cambia cómo te parás frente al mundo.</p>
-    <div class="actions">
-      <a class="btn btn-primary" href="formulario.html">Reservar mi turno</a>
-      <a class="btn btn-outline" href="#servicios">Ver servicios</a>
+  <div class="wrap" style="display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center;width:100%">
+    <div class="hero-copy">
+      <div class="eyebrow">San Juan · Santa Rosa - 25 de Mayo</div>
+      <h1>No venimos<br>a cortarte<br>el <em>pelo.</em></h1>
+      <p>Venimos a que salgas de acá parado distinto. Un buen corte no cambia quién sos, pero sí cambia cómo te presentás al mundo.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="formulario.html">Sacar turno →</a>
+        <a class="btn btn-outline" href="#servicios">Ver servicios</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="blob"></div>
+      <div class="shine"></div>
     </div>
   </div>
 </section>
 
 <div class="stripe"></div>
 
-<section class="philosophy">
-  <div class="wrap section-head">
-    <div class="eyebrow">Nuestra filosofía</div>
-    <h2>Verse bien no es<br>vanidad.</h2>
-  </div>
+<section class="philosophy" id="experiencia">
   <div class="wrap">
-    <p>Vivimos en una época donde la primera impresión sucede en segundos. Un buen corte no cambia quién sos, pero sí cambia cómo te parás frente al mundo.</p>
-    <p>En AMB BARBERS creemos que cuidar tu imagen es una forma de respetarte.</p>
+    <div class="section-head">
+      <div class="eyebrow">La experiencia</div>
+      <h2>Acá no se improvisa.</h2>
+    </div>
+    <p style="max-width:620px;color:var(--fg-dim);font-size:16px;margin-bottom:8px">Cada corte empieza con una charla, no con la máquina prendida. Así trabajamos:</p>
+    <div class="steps">
+      <div class="step-card">
+        <span class="step-num">01</span>
+        <h3>Escuchamos</h3>
+        <p>Qué buscás, qué nunca te terminó de convencer y qué te gustaría probar esta vez.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">02</span>
+        <h3>Asesoramos</h3>
+        <p>Te decimos qué te queda bien y por qué, con criterio — no a ojo ni por moda.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">03</span>
+        <h3>Ejecutamos</h3>
+        <p>Recién ahí prendemos la máquina. Con tu ok, sin sorpresas de último momento.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -60,13 +82,15 @@
   </div>
 </section>
 
+<div class="stripe"></div>
+
 <section class="services" id="servicios">
   <div class="wrap">
     <div class="section-head">
       <div class="eyebrow">Nuestros servicios</div>
       <h2>Elegí tu corte</h2>
     </div>
-    <div id="services-list"><!-- se completa desde assets/js/data.js --></div>
+    <div id="services-list"><!-- se completa desde data.js --></div>
   </div>
 </section>
 
@@ -91,6 +115,18 @@
   </div>
 </section>
 
+<section class="testimonials-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Lo que dicen</div>
+      <h2>Los que vuelven.</h2>
+    </div>
+    <div class="testimonials">
+      <div class="testi-placeholder">Acá van a ir las reseñas de nuestros clientes. Muy pronto.</div>
+    </div>
+  </div>
+</section>
+
 <section class="location-section">
   <div class="wrap">
     <div class="section-head">
@@ -101,7 +137,10 @@
       <div class="details">
         <p>Calle 9 de Julio, entre Calle Mitre y Av. Ramón Barrera</p>
         <p>Santa Rosa - 25 de Mayo, San Juan</p>
-        <p>Lunes a Sábado · 09:00 a 21:00 hs</p>
+
+        <div class="hours" id="hours-list"><!-- se completa desde data.js --></div>
+
+        <a class="btn btn-outline" href="https://www.google.com/maps/dir/?api=1&destination=AMB+BARBER+CREW+San+Juan" target="_blank" rel="noopener">Cómo llegar →</a>
       </div>
       <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1167.2320628556251!2d-68.31467942738881!3d-31.74550204469777!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x968105f3e733da51%3A0xf9f2771a31c8fe1!2sAMB%20BARBER%20CREW!5e0!3m2!1ses-419!2sar!4v1773556820463!5m2!1ses-419!2sar" loading="lazy"></iframe>
     </div>
@@ -120,6 +159,7 @@
 
 <script src="data.js"></script>
 <script>
+  // Servicios
   const list = document.getElementById('services-list');
   SERVICIOS.forEach((s,i)=>{
     const row = document.createElement('div');
@@ -127,6 +167,18 @@
     row.innerHTML = `<span class="num">0${i+1}</span><span class="name">${s.nombre}${s.detalle?`<small>${s.detalle}</small>`:''}</span><span class="meta">${s.precio} · ${s.duracion} min</span>`;
     list.appendChild(row);
   });
+
+  // Horarios (usa las mismas constantes de data.js, no se tocan)
+  const NOMBRES_DIA = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const hoursList = document.getElementById('hours-list');
+  for (let d = 1; d <= 7; d++) {
+    const dow = d % 7; // 1..6,0 -> Lunes..Sábado,Domingo
+    const abierto = DIAS_ATENCION.includes(dow);
+    const row = document.createElement('div');
+    row.className = 'hours-row' + (abierto ? '' : ' closed');
+    row.innerHTML = `<span class="day">${NOMBRES_DIA[dow]}</span><span class="time">${abierto ? HORARIO_APERTURA + ' a ' + HORARIO_CIERRE + ' hs' : 'Cerrado'}</span>`;
+    hoursList.appendChild(row);
+  }
 </script>
 </body>
 </html>
