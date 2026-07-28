@@ -37,7 +37,7 @@
 
 <header>
   <div class="nav wrap">
-    <a href="index.html" class="brand">
+    <a href="index.html" class="brand" id="brand-link">
       <img src="https://placehold.co/76x76/1c1a17/b8874a?text=AMB&font=oswald" alt="AMB BARBERS">
       <span>AMB BARBERS</span>
     </a>
@@ -188,6 +188,25 @@
       status.textContent = 'Hubo un problema al enviar la reserva. Probá de nuevo o escribinos por WhatsApp.';
     }
   });
+
+  // Doble clic en el logo → acceso directo al panel de control
+  const brandLink = document.getElementById('brand-link');
+  if (brandLink) {
+    let clickTimer = null;
+    brandLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (clickTimer) {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+        window.location.href = 'panel.html';
+      } else {
+        clickTimer = setTimeout(() => {
+          clickTimer = null;
+          window.location.href = brandLink.getAttribute('href');
+        }, 280);
+      }
+    });
+  }
 </script>
 </body>
 </html>
