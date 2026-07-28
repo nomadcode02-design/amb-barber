@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel | AMB BARBERS</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .panel-wrap{max-width:900px;margin:0 auto;padding:48px 24px 80px}
+  .panel-head{margin-bottom:32px}
+  .panel-head h1{font-size:clamp(32px,6vw,52px)}
+  .panel-head p{color:var(--fg-dim);margin-top:8px}
+
+  /* login */
+  #login-gate{max-width:360px;margin:80px auto;padding:0 24px;text-align:center}
+  #login-gate input{
+    width:100%;background:var(--panel);border:1px solid var(--line);color:var(--fg);
+    padding:14px 16px;border-radius:var(--radius);font-family:'Work Sans',sans-serif;font-size:15px;
+    margin-bottom:14px;text-align:center;letter-spacing:.1em;
+  }
+  #login-gate input:focus{outline:none;border-color:var(--fg)}
+  #login-error{color:#d98a7a;font-size:13px;margin-top:12px;min-height:18px}
+
+  /* stats */
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line);margin-bottom:40px}
+  .stat-card{background:var(--panel);padding:24px 20px;text-align:center}
+  .stat-card .num{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:.02em}
+  .stat-card .label{color:var(--fg-dim);font-size:12px;letter-spacing:.15em;text-transform:uppercase;margin-top:6px}
+  @media(max-width:600px){.stats-row{grid-template-columns:1fr}}
+
+  /* días */
+  .day-block{border:1px solid var(--line);margin-bottom:2px}
+  .day-header{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:18px 20px;cursor:pointer;background:var(--panel);
+    transition:background .15s;
+  }
+  .day-header:hover{background:var(--panel-2)}
+  .day-header .day-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.03em}
+  .day-header .day-date{color:var(--fg-dim);font-size:13px;margin-left:10px}
+  .day-header .day-count{
+    font-family:'Bebas Neue',sans-serif;font-size:18px;
+    border:1px solid var(--line-strong);padding:4px 14px;
+  }
+  .day-header .chevron{transition:transform .2s;color:var(--fg-dim);margin-left:14px}
+  .day-block.open .chevron{transform:rotate(180deg)}
+  .day-turnos{max-height:0;overflow:hidden;transition:max-height .3s ease}
+  .day-block.open .day-turnos{max-height:2000px}
+  .turno-row{
+    display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;
+    padding:14px 20px;border-top:1px solid var(--line);font-size:14px;
+  }
+  .turno-row .who{font-weight:600}
+  .turno-row .detail{color:var(--fg-dim)}
+  .turno-row .hora{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.03em;white-space:nowrap}
+
+  #dash-error{color:#d98a7a;padding:24px 0}
+  #dash-loading{color:var(--fg-dim);padding:24px 0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav wrap">
+    <a href="index.html" class="brand">
+      <img src="assets/logo-amb-barbers.jpeg" alt="AMB BARBERS">
+      <span>AMB BARBERS</span>
+    </a>
+    <a class="cta" href="index.html">← Volver al sitio</a>
+  </div>
+</header>
+<div class="stripe"></div>
+
+<div id="login-gate">
+  <div class="eyebrow" style="text-align:center;justify-content:center">Panel de control</div>
+  <h2 style="margin-bottom:20px">Ingresá la clave</h2>
+  <input type="password" id="key-input" placeholder="Clave" autocomplete="off">
+  <button class="btn btn-primary" style="width:100%" id="key-submit">Entrar</button>
+  <div id="login-error"></div>
+</div>
+
+<div class="panel-wrap" id="panel-content" style="display:none">
+  <div class="panel-head">
+    <div class="eyebrow">Panel de control</div>
+    <h1>Turnos por día</h1>
+    <p>Acá queda registrado cada corte confirmado por el bot, agrupado por día.</p>
+  </div>
+
+  <div id="dash-loading">Cargando turnos...</div>
+  <div id="dash-error" style="display:none"></div>
+
+  <div id="stats-row" class="stats-row" style="display:none"></div>
+  <div id="days-list"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+  const TURNOS_URL = API_URL.replace('/api/reservar', '/api/turnos');
+  const KEY_STORAGE = 'amb_panel_key';
+
+  const loginGate = document.getElementById('login-gate');
+  const panelContent = document.getElementById('panel-content');
+  const keyInput = document.getElementById('key-input');
+  const keySubmit = document.getElementById('key-submit');
+  const loginError = document.getElementById('login-error');
+
+  function formatearFechaLinda(diaISO) {
+    const [y, m, d] = diaISO.split('-');
+    const fecha = new Date(`${diaISO}T00:00:00`);
+    const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    return { nombreDia: dias[fecha.getDay()], fechaCorta: `${d}/${m}/${y}` };
+  }
+
+  async function cargarPanel(key) {
+    document.getElementById('dash-loading').style.display = 'block';
+    document.getElementById('dash-error').style.display = 'none';
+
+    try {
+      const res = await fetch(`${TURNOS_URL}?key=${encodeURIComponent(key)}`);
+      if (res.status === 401) {
+        sessionStorage.removeItem(KEY_STORAGE);
+        loginGate.style.display = 'block';
+        panelContent.style.display = 'none';
+        loginError.textContent = 'Clave incorrecta.';
+        return;
+      }
+      if (!res.ok) throw new Error('No se pudieron cargar los turnos.');
+
+      const turnos = await res.json();
+      sessionStorage.setItem(KEY_STORAGE, key);
+      loginGate.style.display = 'none';
+      panelContent.style.display = 'block';
+      renderDashboard(turnos);
+    } catch (e) {
+      document.getElementById('dash-loading').style.display = 'none';
+      const errEl = document.getElementById('dash-error');
+      errEl.style.display = 'block';
+      errEl.textContent = 'Hubo un problema al cargar los turnos. Probá de nuevo en unos segundos.';
+      console.error(e);
+    }
+  }
+
+  function renderDashboard(turnos) {
+    document.getElementById('dash-loading').style.display = 'none';
+
+    const hoyISO = formatearFechaLinda(new Date().toISOString().split('T')[0]).fechaCorta;
+    const hoyKey = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD local
+
+    const inicioSemana = new Date();
+    inicioSemana.setDate(inicioSemana.getDate() - inicioSemana.getDay());
+    inicioSemana.setHours(0,0,0,0);
+
+    const turnosHoy = turnos.filter(t => t.dia === hoyKey).length;
+    const turnosSemana = turnos.filter(t => new Date(`${t.dia}T00:00:00`) >= inicioSemana).length;
+
+    const statsRow = document.getElementById('stats-row');
+    statsRow.style.display = 'grid';
+    statsRow.innerHTML = `
+      <div class="stat-card"><div class="num">${turnos.length}</div><div class="label">Turnos totales</div></div>
+      <div class="stat-card"><div class="num">${turnosHoy}</div><div class="label">Hoy</div></div>
+      <div class="stat-card"><div class="num">${turnosSemana}</div><div class="label">Esta semana</div></div>
+    `;
+
+    // Agrupar por día
+    const porDia = {};
+    turnos.forEach(t => {
+      if (!porDia[t.dia]) porDia[t.dia] = [];
+      porDia[t.dia].push(t);
+    });
+
+    const diasOrdenados = Object.keys(porDia).sort((a, b) => b.localeCompare(a));
+    const daysList = document.getElementById('days-list');
+    daysList.innerHTML = '';
+
+    if (diasOrdenados.length === 0) {
+      daysList.innerHTML = '<p style="color:var(--fg-dim)">Todavía no hay turnos registrados.</p>';
+      return;
+    }
+
+    diasOrdenados.forEach((dia, idx) => {
+      const { nombreDia, fechaCorta } = formatearFechaLinda(dia);
+      const turnosDelDia = porDia[dia].sort((a, b) => a.horario.localeCompare(b.horario));
+
+      const block = document.createElement('div');
+      block.className = 'day-block' + (idx === 0 ? ' open' : '');
+      block.innerHTML = `
+        <div class="day-header">
+          <div><span class="day-name">${nombreDia}</span><span class="day-date">${fechaCorta}</span></div>
+          <div style="display:flex;align-items:center">
+            <span class="day-count">${turnosDelDia.length}</span>
+            <span class="chevron">▾</span>
+          </div>
+        </div>
+        <div class="day-turnos">
+          ${turnosDelDia.map(t => `
+            <div class="turno-row">
+              <span class="hora">${t.horario}</span>
+              <span class="who">${t.nombre}</span>
+              <span class="detail">${t.barbero} · ${t.servicio}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      block.querySelector('.day-header').addEventListener('click', () => {
+        block.classList.toggle('open');
+      });
+      daysList.appendChild(block);
+    });
+  }
+
+  keySubmit.addEventListener('click', () => {
+    const key = keyInput.value.trim();
+    if (!key) return;
+    cargarPanel(key);
+  });
+  keyInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') keySubmit.click();
+  });
+
+  // Si ya había una clave guardada en esta pestaña, entra directo
+  const savedKey = sessionStorage.getItem(KEY_STORAGE);
+  if (savedKey) {
+    loginGate.style.display = 'none';
+    panelContent.style.display = 'block';
+    cargarPanel(savedKey);
+  }
+</script>
+</body>
+</html>
