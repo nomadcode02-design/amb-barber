@@ -34,8 +34,11 @@
       </div>
     </div>
     <div class="hero-visual">
-      <img src="assets/local-1.jpeg" alt="Entrada AMB Barbers" class="hero-photo">
-      <div class="shine"></div>
+      <div class="photo-frame">
+        <img src="assets/local-1.jpeg" alt="Entrada AMB Barbers">
+        <div class="frame-shine"></div>
+        <img class="frame-badge" src="assets/logo-amb.jpeg" alt="AMB">
+      </div>
     </div>
   </div>
 </section>
@@ -73,16 +76,17 @@
   <div class="wrap">
     <div class="gallery-frame">
       <div class="pole-edge"></div>
-      <div class="gallery">
-        <img src="assets/local-1.jpeg" alt="Entrada AMB Barbers" class="reveal">
-        <img src="assets/local-2.jpeg" alt="Interior AMB Barbers" class="reveal">
-        <img src="assets/local-3.jpeg" alt="Estación de espejos AMB Barbers" class="reveal">
-        <img src="assets/local-4.jpeg" alt="Estaciones de corte AMB Barbers" class="reveal">
-        <img src="assets/local-5.jpeg" alt="Silla de barbero AMB Barbers" class="reveal">
-        <img src="assets/local-6.jpeg" alt="Salón AMB Barbers" class="reveal">
+      <div class="carousel" id="carousel">
+        <img src="assets/local-1.jpeg" alt="Entrada AMB Barbers">
+        <img src="assets/local-2.jpeg" alt="Interior AMB Barbers">
+        <img src="assets/local-3.jpeg" alt="Estación de espejos AMB Barbers">
+        <img src="assets/local-4.jpeg" alt="Estaciones de corte AMB Barbers">
+        <img src="assets/local-5.jpeg" alt="Silla de barbero AMB Barbers">
+        <img src="assets/local-6.jpeg" alt="Salón AMB Barbers">
       </div>
       <div class="pole-edge"></div>
     </div>
+    <div class="carousel-dots" id="carousel-dots"></div>
   </div>
 </section>
 
@@ -101,8 +105,7 @@
 <div class="stripe"></div>
 
 <section class="barbers-section">
-  <div class="wrap barbers-wrap">
-    <img class="team-watermark" src="assets/logo-amb-barbers.jpeg" alt="" aria-hidden="true">
+  <div class="wrap">
     <div class="section-head">
       <div class="eyebrow">El equipo</div>
       <h2>Tu barbero</h2>
@@ -183,23 +186,32 @@
     row.className = 'hours-row' + (abierto ? '' : ' closed');
     row.innerHTML = `<span class="day">${NOMBRES_DIA[dow]}</span><span class="time">${abierto ? HORARIO_APERTURA + ' a ' + HORARIO_CIERRE + ' hs' : 'Cerrado'}</span>`;
     hoursList.appendChild(row);
-  }  // Animación de aparición para la galería (respeta "reducir movimiento")
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const revealEls = document.querySelectorAll('.reveal');
-  if (prefersReduced) {
-    revealEls.forEach(el => el.classList.add('is-visible'));
-  } else if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
+  }  // Carrusel de fotos del local: arma los puntos y sincroniza con el scroll
+  const carousel = document.getElementById('carousel');
+  const dotsWrap = document.getElementById('carousel-dots');
+  if (carousel && dotsWrap) {
+    const slides = Array.from(carousel.children);
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `Ver foto ${i + 1}`);
+      dot.addEventListener('click', () => {
+        slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      });
+      dotsWrap.appendChild(dot);
+    });
+    const dots = Array.from(dotsWrap.children);
+
+    const carouselObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
+          const idx = slides.indexOf(entry.target);
+          dots.forEach(d => d.classList.remove('active'));
+          if (dots[idx]) dots[idx].classList.add('active');
         }
       });
-    }, { threshold: 0.15 });
-    revealEls.forEach(el => observer.observe(el));
-  } else {
-    revealEls.forEach(el => el.classList.add('is-visible'));
+    }, { root: carousel, threshold: 0.6 });
+    slides.forEach(s => carouselObserver.observe(s));
   }
 </script>
 </body>
