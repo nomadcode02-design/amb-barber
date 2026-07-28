@@ -294,3 +294,19 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
 .hours-row .time{color:var(--fg-dim)}
 .hours-row.closed .time{color:var(--fg-dimmer)}
 .location .details .btn{margin-top:24px;align-self:flex-start}
+
+/* ================= NUEVO: logo de fondo en sección equipo ================= */
+.barbers-wrap{position:relative;overflow:hidden}
+.team-watermark{
+  position:absolute;
+  top:50%;left:50%;
+  width:min(900px,140%);
+  transform:translate(-50%,-50%) rotate(-4deg);
+  opacity:.06;
+  filter:grayscale(100%) contrast(1.1);
+  pointer-events:none;
+  z-index:0;
+  mix-blend-mode:screen;
+}
+.barbers-wrap .section-head,.barbers-wrap .barbers{position:relative;z-index:1}
+.brand img{background:#000}
