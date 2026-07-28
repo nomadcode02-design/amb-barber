@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="hero-visual">
-      <div class="blob"></div>
+      <img src="assets/local-1.jpeg" alt="Entrada AMB Barbers" class="hero-photo">
       <div class="shine"></div>
     </div>
   </div>
@@ -71,13 +71,17 @@
 
 <section class="gallery-section">
   <div class="wrap">
-    <div class="gallery">
-      <img src="assets/local-1.jpeg" alt="Entrada AMB Barbers">
-      <img src="assets/local-2.jpeg" alt="Interior AMB Barbers">
-      <img src="assets/local-3.jpeg" alt="Estación de espejos AMB Barbers">
-      <img src="assets/local-4.jpeg" alt="Estaciones de corte AMB Barbers">
-      <img src="assets/local-5.jpeg" alt="Silla de barbero AMB Barbers">
-      <img src="assets/local-6.jpeg" alt="Salón AMB Barbers">
+    <div class="gallery-frame">
+      <div class="pole-edge"></div>
+      <div class="gallery">
+        <img src="assets/local-1.jpeg" alt="Entrada AMB Barbers" class="reveal">
+        <img src="assets/local-2.jpeg" alt="Interior AMB Barbers" class="reveal">
+        <img src="assets/local-3.jpeg" alt="Estación de espejos AMB Barbers" class="reveal">
+        <img src="assets/local-4.jpeg" alt="Estaciones de corte AMB Barbers" class="reveal">
+        <img src="assets/local-5.jpeg" alt="Silla de barbero AMB Barbers" class="reveal">
+        <img src="assets/local-6.jpeg" alt="Salón AMB Barbers" class="reveal">
+      </div>
+      <div class="pole-edge"></div>
     </div>
   </div>
 </section>
@@ -179,6 +183,23 @@
     row.className = 'hours-row' + (abierto ? '' : ' closed');
     row.innerHTML = `<span class="day">${NOMBRES_DIA[dow]}</span><span class="time">${abierto ? HORARIO_APERTURA + ' a ' + HORARIO_CIERRE + ' hs' : 'Cerrado'}</span>`;
     hoursList.appendChild(row);
+  }  // Animación de aparición para la galería (respeta "reducir movimiento")
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealEls = document.querySelectorAll('.reveal');
+  if (prefersReduced) {
+    revealEls.forEach(el => el.classList.add('is-visible'));
+  } else if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => observer.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('is-visible'));
   }
 </script>
 </body>
