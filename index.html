@@ -13,8 +13,8 @@
 
 <header>
   <div class="nav wrap">
-    <a href="index.html" class="brand">
-      <img src="assets/logo-amb-barbers.jpeg" alt="AMB BARBERS">
+    <a href="index.html" class="brand" id="brand-link">
+      <img src="assets/logo-a-mark.jpeg" alt="AMB BARBERS">
       <span>AMB BARBERS</span>
     </a>
     <a class="cta" href="formulario.html">Sacar turno</a>
@@ -23,23 +23,19 @@
 <div class="stripe"></div>
 
 <section class="hero">
-  <div class="wrap" style="display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center;width:100%">
+  <div class="wrap hero-inner">
+    <div class="hero-bg-mark">
+      <img src="assets/logo-a-mark.jpeg" alt="">
+    </div>
     <div class="hero-copy">
-      <div class="eyebrow">San Juan · Santa Rosa - 25 de Mayo</div>
+      <div class="eyebrow">Barbería · San Juan · Santa Rosa - 25 de Mayo</div>
       <h1>No venimos<br>a cortarte<br>el <em>pelo.</em></h1>
       <p>Venimos a que salgas de acá parado distinto. Un buen corte no cambia quién sos, pero sí cambia cómo te presentás al mundo.</p>
       <div class="actions">
         <a class="btn btn-primary" href="formulario.html">Sacar turno →</a>
-        <a class="btn btn-outline" href="#servicios">Ver servicios</a>
+        <span class="reserva-sub">Reservás online en 30 segundos</span>
       </div>
-    </div>
-    <div class="hero-visual">
-      <div class="photo-frame">
-        <img class="frame-photo" src="assets/local-1.jpeg" alt="Entrada AMB Barbers">
-        <div class="frame-shine"></div>
-        <div class="emblem-aura"></div>
-        <img class="frame-emblem" src="assets/logo-amb-barbers.jpeg" alt="AMB BARBERS">
-      </div>
+      <div class="scroll-hint">— Scroll</div>
     </div>
   </div>
 </section>
@@ -211,6 +207,25 @@
       });
     }, { root: carousel, threshold: 0.6 });
     slides.forEach(s => carouselObserver.observe(s));
+  }
+
+  // Doble clic en el logo → acceso directo al panel de control
+  const brandLink = document.getElementById('brand-link');
+  if (brandLink) {
+    let clickTimer = null;
+    brandLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (clickTimer) {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+        window.location.href = 'panel.html';
+      } else {
+        clickTimer = setTimeout(() => {
+          clickTimer = null;
+          window.location.href = brandLink.getAttribute('href');
+        }, 280);
+      }
+    });
   }
 </script>
 </body>

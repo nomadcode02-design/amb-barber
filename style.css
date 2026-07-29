@@ -207,37 +207,30 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
 .step-card p{color:var(--fg-dim);font-size:14.5px;line-height:1.6}
 @media(max-width:720px){.steps{grid-template-columns:1fr}}
 
-/* ================= NUEVO: hero visual (forma abstracta brillante) ================= */
-.hero{display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:32px}
-.hero-copy{position:relative;z-index:2}
-.hero-visual{
-  position:relative;aspect-ratio:1/1.05;justify-self:stretch;
-  border:1px solid var(--line);
-  background:
-    radial-gradient(circle at 30% 20%, rgba(255,255,255,.14), transparent 45%),
-    radial-gradient(circle at 80% 75%, rgba(255,255,255,.07), transparent 50%),
-    linear-gradient(160deg,#1c1c1c 0%,#0a0a0a 60%);
-  overflow:hidden;
+/* ================= NUEVO: hero — solo texto, con el logo grande de fondo ================= */
+.hero-inner{position:relative}
+.hero-copy{position:relative;z-index:2;max-width:640px}
+.hero-bg-mark{
+  position:absolute;top:50%;right:-6%;
+  width:min(760px,72vw);aspect-ratio:1/1;
+  transform:translateY(-50%);
+  pointer-events:none;z-index:1;
 }
-.hero-visual::after{
-  content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(115deg, rgba(255,255,255,.035) 0 2px, transparent 2px 26px);
-  mix-blend-mode:overlay;
+.hero-bg-mark img{
+  width:100%;height:100%;object-fit:contain;
+  mix-blend-mode:screen;
+  opacity:.16;
+  filter:drop-shadow(0 0 60px rgba(255,255,255,.08));
 }
-.hero-visual .blob{
-  position:absolute;inset:8%;
-  background:linear-gradient(145deg,#2a2a2a,#050505 55%,#3d3d3d);
-  clip-path:path('M50,4 C78,2 96,26 92,52 C89,72 96,92 74,96 C50,100 22,98 8,78 C-4,60 4,34 22,16 C32,6 40,5 50,4 Z');
-  box-shadow:0 0 60px rgba(255,255,255,.06) inset, 0 30px 60px rgba(0,0,0,.6);
+.reserva-sub{color:var(--fg-dim);font-size:13px;letter-spacing:.03em;align-self:center}
+.scroll-hint{
+  margin-top:56px;color:var(--fg-dim);font-size:11px;letter-spacing:.25em;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;
 }
-.hero-visual .shine{
-  position:absolute;width:60%;height:60%;top:6%;left:8%;
-  background:radial-gradient(circle, rgba(255,255,255,.35), transparent 70%);
-  filter:blur(6px);opacity:.5;
-}
-@media(max-width:860px){
-  .hero{grid-template-columns:1fr}
-  .hero-visual{order:-1;aspect-ratio:16/10;margin-bottom:8px}
+.scroll-hint::before{content:'';width:20px;height:1px;background:var(--fg-dim)}
+@media(max-width:720px){
+  .hero-bg-mark{width:88vw;right:-20%;opacity:.9}
+  .hero-copy{max-width:100%}
 }
 
 /* ================= NUEVO: brillo / glass en botones y tarjetas ================= */
