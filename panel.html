@@ -31,6 +31,14 @@
   .stat-card .label{color:var(--fg-dim);font-size:12px;letter-spacing:.15em;text-transform:uppercase;margin-top:6px}
   @media(max-width:600px){.stats-row{grid-template-columns:1fr}}
 
+  /* por barbero */
+  .barberos-row{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line);margin-bottom:40px}
+  .barbero-card{background:var(--panel);padding:22px 20px}
+  .barbero-card .nombre{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.02em}
+  .barbero-card .fila{display:flex;justify-content:space-between;margin-top:10px;font-size:13px;color:var(--fg-dim)}
+  .barbero-card .fila b{color:var(--fg);font-weight:600}
+  @media(max-width:600px){.barberos-row{grid-template-columns:1fr}}
+
   /* días */
   .day-block{border:1px solid var(--line);margin-bottom:2px}
   .day-header{
@@ -48,14 +56,22 @@
   .day-header .chevron{transition:transform .2s;color:var(--fg-dim);margin-left:14px}
   .day-block.open .chevron{transform:rotate(180deg)}
   .day-turnos{max-height:0;overflow:hidden;transition:max-height .3s ease}
-  .day-block.open .day-turnos{max-height:2000px}
+  .day-block.open .day-turnos{max-height:4000px}
   .turno-row{
-    display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;
     padding:14px 20px;border-top:1px solid var(--line);font-size:14px;
   }
+  .turno-row .turno-info{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;flex:1}
   .turno-row .who{font-weight:600}
   .turno-row .detail{color:var(--fg-dim)}
+  .turno-row .precio{color:var(--fg)}
   .turno-row .hora{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.03em;white-space:nowrap}
+  .btn-delete{
+    background:transparent;border:1px solid var(--line-strong);color:var(--fg-dim);
+    width:30px;height:30px;border-radius:var(--radius);cursor:pointer;font-size:14px;
+    flex-shrink:0;transition:background .15s,color .15s,border-color .15s;
+  }
+  .btn-delete:hover{background:#d98a7a;border-color:#d98a7a;color:#1a0a08}
 
   #dash-error{color:#d98a7a;padding:24px 0}
   #dash-loading{color:var(--fg-dim);padding:24px 0}
@@ -93,6 +109,7 @@
   <div id="dash-error" style="display:none"></div>
 
   <div id="stats-row" class="stats-row" style="display:none"></div>
+  <div id="barberos-row" class="barberos-row" style="display:none"></div>
   <div id="days-list"></div>
 </div>
 
@@ -131,6 +148,7 @@
 
       const turnos = await res.json();
       sessionStorage.setItem(KEY_STORAGE, key);
+      currentKey = key;
       loginGate.style.display = 'none';
       panelContent.style.display = 'block';
       renderDashboard(turnos);
@@ -143,10 +161,31 @@
     }
   }
 
+  let currentKey = null;
+
+  function parsePrecio(precioStr) {
+    const n = parseInt(String(precioStr).replace(/[^\d]/g, ''), 10);
+    return isNaN(n) ? 0 : n;
+  }
+  function formatPrecio(n) {
+    return '$' + n.toLocaleString('es-AR');
+  }
+
+  async function borrarTurno(id, filaEl) {
+    if (!confirm('¿Borrar este turno? No se puede deshacer.')) return;
+    try {
+      const res = await fetch(`${TURNOS_URL}/${id}?key=${encodeURIComponent(currentKey)}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('No se pudo borrar');
+      filaEl.remove();
+    } catch (e) {
+      alert('No se pudo borrar el turno. Probá de nuevo.');
+      console.error(e);
+    }
+  }
+
   function renderDashboard(turnos) {
     document.getElementById('dash-loading').style.display = 'none';
 
-    const hoyISO = formatearFechaLinda(new Date().toISOString().split('T')[0]).fechaCorta;
     const hoyKey = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD local
 
     const inicioSemana = new Date();
@@ -163,6 +202,26 @@
       <div class="stat-card"><div class="num">${turnosHoy}</div><div class="label">Hoy</div></div>
       <div class="stat-card"><div class="num">${turnosSemana}</div><div class="label">Esta semana</div></div>
     `;
+
+    // Cajas por barbero: cantidad de cortes y total facturado por cada uno
+    const porBarbero = {};
+    turnos.forEach(t => {
+      if (!porBarbero[t.barbero]) porBarbero[t.barbero] = { cantidad: 0, total: 0 };
+      porBarbero[t.barbero].cantidad += 1;
+      porBarbero[t.barbero].total += parsePrecio(t.precio);
+    });
+    const barberosRow = document.getElementById('barberos-row');
+    const nombresBarberos = Object.keys(porBarbero);
+    if (nombresBarberos.length > 0) {
+      barberosRow.style.display = 'grid';
+      barberosRow.innerHTML = nombresBarberos.map(nombre => `
+        <div class="barbero-card">
+          <div class="nombre">${nombre}</div>
+          <div class="fila"><span>Cortes</span><b>${porBarbero[nombre].cantidad}</b></div>
+          <div class="fila"><span>Facturado</span><b>${formatPrecio(porBarbero[nombre].total)}</b></div>
+        </div>
+      `).join('');
+    }
 
     // Agrupar por día
     const porDia = {};
@@ -196,16 +255,26 @@
         </div>
         <div class="day-turnos">
           ${turnosDelDia.map(t => `
-            <div class="turno-row">
-              <span class="hora">${t.horario}</span>
-              <span class="who">${t.nombre}</span>
-              <span class="detail">${t.barbero} · ${t.servicio}</span>
+            <div class="turno-row" data-id="${t.id}">
+              <div class="turno-info">
+                <span class="hora">${t.horario}</span>
+                <span class="who">${t.nombre}</span>
+                <span class="detail">${t.barbero} · ${t.servicio}</span>
+                <span class="precio">${t.precio || ''}</span>
+              </div>
+              <button class="btn-delete" title="Borrar turno">✕</button>
             </div>
           `).join('')}
         </div>
       `;
       block.querySelector('.day-header').addEventListener('click', () => {
         block.classList.toggle('open');
+      });
+      block.querySelectorAll('.turno-row').forEach(fila => {
+        fila.querySelector('.btn-delete').addEventListener('click', (e) => {
+          e.stopPropagation();
+          borrarTurno(fila.dataset.id, fila);
+        });
       });
       daysList.appendChild(block);
     });
