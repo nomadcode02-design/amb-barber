@@ -8,7 +8,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-  .form-shell{max-width:560px;margin:0 auto;padding:56px 24px 80px}
+  .form-shell{max-width:560px;margin:0 auto;padding:56px 24px 80px;position:relative;z-index:1;overflow:hidden}
+  .form-bg-mark{
+    position:fixed;top:50%;left:50%;
+    width:min(900px,140vw);aspect-ratio:1/1.3;
+    transform:translate(-50%,-50%);
+    pointer-events:none;z-index:0;
+  }
+  .form-bg-mark img{
+    width:100%;height:100%;object-fit:contain;
+    mix-blend-mode:screen;
+    opacity:.1;
+  }
   .form-shell h1{font-size:44px;margin-bottom:6px}
   .form-shell .eyebrow{color:var(--accent);letter-spacing:.2em;text-transform:uppercase;font-size:12px;margin-bottom:14px}
   fieldset{border:0;margin-bottom:26px}
@@ -48,6 +59,17 @@
     color:#fff;font-weight:600;gap:10px;
   }
   .btn-outline{width:100%}
+
+  .time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .time-pill{
+    background:var(--panel);border:1px solid var(--line);color:var(--fg);
+    padding:14px 8px;border-radius:var(--radius);font-family:'Work Sans',sans-serif;font-size:14px;font-weight:600;
+    cursor:pointer;text-align:center;transition:border-color .15s,background .15s;
+  }
+  .time-pill:hover{border-color:var(--line-strong)}
+  .time-pill.selected{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+  .time-pill.disabled{opacity:.35;pointer-events:none}
+  .time-empty{color:var(--fg-dim);font-size:14px;grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -62,6 +84,7 @@
 </header>
 <div class="stripe"></div>
 
+<div class="form-bg-mark"><img src="assets/logo-amb-barbers-club.jpeg" alt=""></div>
 <div class="form-shell">
   <div class="eyebrow">Reserva online</div>
   <h1>Reservá tu turno</h1>
@@ -96,10 +119,11 @@
     </fieldset>
 
     <fieldset>
-      <label for="horario">Horario</label>
-      <select id="horario" name="horario" required>
-        <option value="" disabled selected>Elegí un día primero</option>
-      </select>
+      <label>Seleccioná un horario</label>
+      <input type="hidden" id="horario" name="horario">
+      <div class="time-grid" id="horario-pick">
+        <span class="time-empty">Elegí un día primero</span>
+      </div>
     </fieldset>
 
     <button type="submit" class="btn btn-primary">Confirmar reserva</button>
@@ -153,9 +177,10 @@
     servicioSel.appendChild(opt);
   });
 
-  // Horarios disponibles según franja de atención (cada 30 min)
+  // Horarios disponibles según franja de atención (cada 1 hora), como botones
   const diaInput = document.getElementById('dia');
-  const horarioSel = document.getElementById('horario');
+  const horarioInput = document.getElementById('horario');
+  const horarioPick = document.getElementById('horario-pick');
 
   // Fecha de hoy en formato YYYY-MM-DD usando hora LOCAL (no UTC), para que
   // no salte al día siguiente cuando ya es de noche en Argentina.
@@ -168,33 +193,32 @@
   diaInput.min = fechaLocalISO(new Date());
 
   diaInput.addEventListener('change', () => {
+    horarioInput.value = '';
+    horarioPick.innerHTML = '';
     const fecha = new Date(diaInput.value + 'T00:00:00');
     const dow = fecha.getDay();
-    horarioSel.innerHTML = '';
     if (!DIAS_ATENCION.includes(dow)) {
-      const opt = document.createElement('option');
-      opt.value = '';
-      opt.disabled = true;
-      opt.selected = true;
-      opt.textContent = 'Cerrado ese día';
-      horarioSel.appendChild(opt);
+      horarioPick.innerHTML = '<span class="time-empty">Cerrado ese día</span>';
       return;
     }
     const [hIni, mIni] = HORARIO_APERTURA.split(':').map(Number);
     const [hFin, mFin] = HORARIO_CIERRE.split(':').map(Number);
     let t = hIni*60+mIni;
     const fin = hFin*60+mFin;
-    const first = document.createElement('option');
-    first.value = ''; // vacío a propósito: así 'required' detecta que no se eligió nada
-    first.disabled = true; first.selected = true; first.textContent = 'Elegí un horario';
-    horarioSel.appendChild(first);
     while (t < fin) {
       const hh = String(Math.floor(t/60)).padStart(2,'0');
       const mm = String(t%60).padStart(2,'0');
-      const opt = document.createElement('option');
-      opt.value = `${hh}:${mm}`;
-      opt.textContent = `${hh}:${mm}`;
-      horarioSel.appendChild(opt);
+      const valor = `${hh}:${mm}`;
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.className = 'time-pill';
+      pill.textContent = `${valor} HS`;
+      pill.addEventListener('click', () => {
+        horarioPick.querySelectorAll('.time-pill').forEach(p => p.classList.remove('selected'));
+        pill.classList.add('selected');
+        horarioInput.value = valor;
+      });
+      horarioPick.appendChild(pill);
       t += 60;
     }
   });
@@ -205,6 +229,13 @@
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    if (!horarioInput.value) {
+      status.className='err';
+      status.textContent = 'Elegí un horario antes de confirmar.';
+      return;
+    }
+
     status.className=''; status.textContent = 'Enviando reserva...';
 
     const data = {
@@ -213,7 +244,7 @@
       barbero: form.barbero.value,
       servicio: servicioSel.value,
       dia: diaInput.value,
-      horario: horarioSel.value,
+      horario: horarioInput.value,
     };
 
     try {
@@ -226,6 +257,7 @@
       status.className='ok';
       status.textContent = '¡Reserva enviada! Te llega la confirmación por WhatsApp en instantes.';
       form.reset();
+      horarioPick.innerHTML = '<span class="time-empty">Elegí un día primero</span>';
     } catch (err) {
       status.className='err';
       status.textContent = 'Hubo un problema al enviar la reserva. Probá de nuevo o escribinos por WhatsApp.';
