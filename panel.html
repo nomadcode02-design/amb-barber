@@ -75,6 +75,35 @@
 
   #dash-error{color:#d98a7a;padding:24px 0}
   #dash-loading{color:var(--fg-dim);padding:24px 0}
+
+  /* bloqueos */
+  .block-section{border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px;margin-bottom:40px}
+  .block-section h3{font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:4px}
+  .block-section .sub{color:var(--fg-dim);font-size:13px;margin-bottom:18px}
+  .block-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .block-form label{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-dim);margin-bottom:6px}
+  .block-form input,.block-form select{
+    width:100%;background:var(--panel);border:1px solid var(--line);color:var(--fg);
+    padding:11px 12px;border-radius:var(--radius);font-family:'Work Sans',sans-serif;font-size:14px;
+  }
+  .block-form .full{grid-column:1/-1}
+  .block-form button{
+    grid-column:1/-1;background:var(--fg);color:var(--bg);border:0;
+    padding:13px;border-radius:var(--radius);font-weight:600;cursor:pointer;margin-top:4px;
+  }
+  #block-msg{grid-column:1/-1;font-size:13px;min-height:16px}
+  .block-list{margin-top:20px;display:flex;flex-direction:column;gap:8px}
+  .block-item{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;font-size:13px;
+  }
+  .block-item .info b{color:var(--fg)}
+  .block-item .info{color:var(--fg-dim)}
+  .btn-delete-block{
+    background:transparent;border:1px solid var(--line-strong);color:var(--fg-dim);
+    width:26px;height:26px;border-radius:var(--radius);cursor:pointer;font-size:12px;flex-shrink:0;
+  }
+  .btn-delete-block:hover{background:#d98a7a;border-color:#d98a7a;color:#1a0a08}
 </style>
 </head>
 <body>
@@ -110,12 +139,44 @@
 
   <div id="stats-row" class="stats-row" style="display:none"></div>
   <div id="barberos-row" class="barberos-row" style="display:none"></div>
+
+  <div class="block-section">
+    <h3>Bloquear horarios</h3>
+    <p class="sub">Por ejemplo: si los chicos salen de 14 a 15, ese rango queda sin poder reservarse y no genera turnos ni mensajes del bot.</p>
+    <form class="block-form" id="block-form">
+      <div>
+        <label>Día</label>
+        <input type="date" id="block-dia" required>
+      </div>
+      <div>
+        <label>Barbero</label>
+        <select id="block-barbero" required>
+          <option value="Todos">Ambos</option>
+          <option value="sebastian">Sebastian</option>
+          <option value="ale">Ale</option>
+        </select>
+      </div>
+      <div>
+        <label>Desde</label>
+        <select id="block-inicio" required></select>
+      </div>
+      <div>
+        <label>Hasta</label>
+        <select id="block-fin" required></select>
+      </div>
+      <button type="submit">Bloquear horario</button>
+      <div id="block-msg"></div>
+    </form>
+    <div class="block-list" id="block-list"></div>
+  </div>
+
   <div id="days-list"></div>
 </div>
 
 <script src="data.js"></script>
 <script>
   const TURNOS_URL = API_URL.replace('/api/reservar', '/api/turnos');
+  const BLOQUEOS_URL = API_URL.replace('/api/reservar', '/api/bloqueos');
   const KEY_STORAGE = 'amb_panel_key';
 
   const loginGate = document.getElementById('login-gate');
@@ -152,6 +213,7 @@
       loginGate.style.display = 'none';
       panelContent.style.display = 'block';
       renderDashboard(turnos);
+      cargarBloqueos();
     } catch (e) {
       document.getElementById('dash-loading').style.display = 'none';
       const errEl = document.getElementById('dash-error');
@@ -279,6 +341,114 @@
       daysList.appendChild(block);
     });
   }
+
+  // ---------- Bloqueo de horarios ----------
+  const blockDia = document.getElementById('block-dia');
+  const blockInicio = document.getElementById('block-inicio');
+  const blockFin = document.getElementById('block-fin');
+  const blockForm = document.getElementById('block-form');
+  const blockMsg = document.getElementById('block-msg');
+  const blockList = document.getElementById('block-list');
+
+  function fechaLocalISO(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${dia}`;
+  }
+  blockDia.min = fechaLocalISO(new Date());
+
+  [blockInicio, blockFin].forEach(sel => {
+    for (let h = 9; h <= 21; h++) {
+      const hh = String(h).padStart(2, '0');
+      const opt = document.createElement('option');
+      opt.value = `${hh}:00`;
+      opt.textContent = `${hh}:00`;
+      sel.appendChild(opt);
+    }
+  });
+  blockFin.value = '15:00';
+  blockInicio.value = '14:00';
+
+  async function cargarBloqueos() {
+    try {
+      const res = await fetch(`${BLOQUEOS_URL}?key=${encodeURIComponent(currentKey)}`);
+      if (!res.ok) return;
+      const bloqueos = await res.json();
+      renderBloqueos(bloqueos);
+    } catch (e) {
+      console.error('Error cargando bloqueos:', e);
+    }
+  }
+
+  function renderBloqueos(bloqueos) {
+    const grupos = {};
+    bloqueos.forEach(b => {
+      if (!grupos[b.grupoId]) {
+        grupos[b.grupoId] = { dia: b.dia, barbero: b.barbero, horarios: [] };
+      }
+      grupos[b.grupoId].horarios.push(b.horario);
+    });
+
+    blockList.innerHTML = '';
+    const ids = Object.keys(grupos);
+    if (ids.length === 0) {
+      blockList.innerHTML = '<p style="color:var(--fg-dim);font-size:13px">No hay horarios bloqueados.</p>';
+      return;
+    }
+    ids.forEach(grupoId => {
+      const g = grupos[grupoId];
+      const horariosOrdenados = g.horarios.sort();
+      const desde = horariosOrdenados[0];
+      const hastaMin = horariosOrdenados[horariosOrdenados.length - 1];
+      const [hh, mm] = hastaMin.split(':').map(Number);
+      const hasta = `${String(hh + 1).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+
+      const item = document.createElement('div');
+      item.className = 'block-item';
+      item.innerHTML = `
+        <div class="info"><b>${g.dia}</b> · ${desde} a ${hasta} · ${g.barbero}</div>
+        <button class="btn-delete-block" title="Quitar bloqueo">✕</button>
+      `;
+      item.querySelector('.btn-delete-block').addEventListener('click', async () => {
+        if (!confirm('¿Quitar este bloqueo?')) return;
+        try {
+          const res = await fetch(`${BLOQUEOS_URL}/${grupoId}?key=${encodeURIComponent(currentKey)}`, { method: 'DELETE' });
+          if (!res.ok) throw new Error();
+          item.remove();
+        } catch (e) {
+          alert('No se pudo quitar el bloqueo.');
+        }
+      });
+      blockList.appendChild(item);
+    });
+  }
+
+  blockForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    blockMsg.textContent = 'Bloqueando...';
+    blockMsg.style.color = 'var(--fg-dim)';
+    try {
+      const res = await fetch(`${BLOQUEOS_URL}?key=${encodeURIComponent(currentKey)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          dia: blockDia.value,
+          barbero: document.getElementById('block-barbero').value,
+          horaInicio: blockInicio.value,
+          horaFin: blockFin.value,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error');
+      blockMsg.textContent = '✓ Horario bloqueado.';
+      blockMsg.style.color = '#8fbf7a';
+      cargarBloqueos();
+    } catch (e) {
+      blockMsg.textContent = e.message || 'No se pudo bloquear ese horario.';
+      blockMsg.style.color = '#d98a7a';
+    }
+  });
 
   keySubmit.addEventListener('click', () => {
     const key = keyInput.value.trim();
