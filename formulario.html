@@ -177,7 +177,9 @@
     servicioSel.appendChild(opt);
   });
 
-  // Horarios disponibles según franja de atención (cada 1 hora), como botones
+  // Horarios disponibles según franja de atención (cada 1 hora), como botones.
+  // Si ya se eligió barbero, se consulta /api/ocupados para tachar los horarios
+  // que ese barbero ya tiene tomados ese día.
   const diaInput = document.getElementById('dia');
   const horarioInput = document.getElementById('horario');
   const horarioPick = document.getElementById('horario-pick');
@@ -192,36 +194,85 @@
   }
   diaInput.min = fechaLocalISO(new Date());
 
-  diaInput.addEventListener('change', () => {
+  // API_URL apunta al endpoint de reserva (ej: https://tu-servidor/api/reservar).
+  // Para consultar disponibilidad usamos la misma base, cambiando el endpoint.
+  const API_BASE = API_URL.replace(/\/api\/reservar\/?$/, '');
+
+  async function actualizarHorarios() {
     horarioInput.value = '';
     horarioPick.innerHTML = '';
+
+    if (!diaInput.value) {
+      horarioPick.innerHTML = '<span class="time-empty">Elegí un día primero</span>';
+      return;
+    }
+
     const fecha = new Date(diaInput.value + 'T00:00:00');
     const dow = fecha.getDay();
     if (!DIAS_ATENCION.includes(dow)) {
       horarioPick.innerHTML = '<span class="time-empty">Cerrado ese día</span>';
       return;
     }
+
+    // Armamos todos los horarios posibles según el horario de atención
     const [hIni, mIni] = HORARIO_APERTURA.split(':').map(Number);
     const [hFin, mFin] = HORARIO_CIERRE.split(':').map(Number);
-    let t = hIni*60+mIni;
-    const fin = hFin*60+mFin;
+    let t = hIni * 60 + mIni;
+    const fin = hFin * 60 + mFin;
+    const horariosPosibles = [];
     while (t < fin) {
-      const hh = String(Math.floor(t/60)).padStart(2,'0');
-      const mm = String(t%60).padStart(2,'0');
-      const valor = `${hh}:${mm}`;
-      const pill = document.createElement('button');
-      pill.type = 'button';
-      pill.className = 'time-pill';
-      pill.textContent = `${valor} HS`;
-      pill.addEventListener('click', () => {
-        horarioPick.querySelectorAll('.time-pill').forEach(p => p.classList.remove('selected'));
-        pill.classList.add('selected');
-        horarioInput.value = valor;
-      });
-      horarioPick.appendChild(pill);
+      const hh = String(Math.floor(t / 60)).padStart(2, '0');
+      const mm = String(t % 60).padStart(2, '0');
+      horariosPosibles.push(`${hh}:${mm}`);
       t += 60;
     }
-  });
+
+    const barberoSeleccionado = form.barbero.value;
+
+    // Si ya eligió barbero, consultamos qué horarios tiene ocupados ese día
+    let ocupados = [];
+    if (barberoSeleccionado) {
+      horarioPick.innerHTML = '<span class="time-empty">Consultando disponibilidad...</span>';
+      try {
+        const res = await fetch(`${API_BASE}/api/ocupados?dia=${diaInput.value}&barbero=${barberoSeleccionado}`);
+        if (res.ok) {
+          const data = await res.json();
+          ocupados = data.ocupados || [];
+        }
+      } catch (e) {
+        console.error('No se pudo consultar disponibilidad:', e);
+        // Si falla la consulta (por ejemplo sin internet), preferimos mostrar
+        // todos los horarios igual antes que trabar la reserva por completo.
+        // El backend igual va a rechazar un horario duplicado al confirmar.
+      }
+      horarioPick.innerHTML = '';
+    }
+
+    horariosPosibles.forEach(valor => {
+      const ocupado = ocupados.includes(valor);
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.className = 'time-pill' + (ocupado ? ' disabled' : '');
+      pill.textContent = ocupado ? `${valor} HS ✕` : `${valor} HS`;
+      if (!ocupado) {
+        pill.addEventListener('click', () => {
+          horarioPick.querySelectorAll('.time-pill').forEach(p => p.classList.remove('selected'));
+          pill.classList.add('selected');
+          horarioInput.value = valor;
+        });
+      }
+      horarioPick.appendChild(pill);
+    });
+
+    if (barberoSeleccionado && horariosPosibles.every(h => ocupados.includes(h))) {
+      horarioPick.innerHTML = '<span class="time-empty">No quedan horarios disponibles con este barbero ese día. Probá otro día o el otro barbero.</span>';
+    }
+  }
+
+  diaInput.addEventListener('change', actualizarHorarios);
+  // Los radios de barbero se agregan dinámicamente, pero "change" burbujea,
+  // así que escuchar en el contenedor alcanza para detectar cualquier selección.
+  barberPick.addEventListener('change', actualizarHorarios);
 
   // Envío al backend (el bot manda la confirmación automática por WhatsApp)
   const form = document.getElementById('reserva-form');
@@ -247,20 +298,25 @@
       horario: horarioInput.value,
     };
 
+    let res;
     try {
-      const res = await fetch(API_URL, {
+      res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error('No se pudo enviar');
+      const respuesta = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(respuesta.error || 'No se pudo enviar');
       status.className='ok';
       status.textContent = '¡Reserva enviada! Te llega la confirmación por WhatsApp en instantes.';
       form.reset();
       horarioPick.innerHTML = '<span class="time-empty">Elegí un día primero</span>';
     } catch (err) {
       status.className='err';
-      status.textContent = 'Hubo un problema al enviar la reserva. Probá de nuevo o escribinos por WhatsApp.';
+      status.textContent = err.message || 'Hubo un problema al enviar la reserva. Probá de nuevo o escribinos por WhatsApp.';
+      // Si el horario se ocupó justo antes de confirmar (dos personas reservando
+      // a la vez), refrescamos la grilla para que ya no aparezca disponible.
+      if (res && res.status === 409) actualizarHorarios();
     }
   });
 
