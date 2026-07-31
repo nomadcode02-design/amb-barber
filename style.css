@@ -229,7 +229,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
 }
 .scroll-hint::before{content:'';width:20px;height:1px;background:var(--fg-dim)}
 @media(max-width:720px){
-  .hero-bg-mark{width:88vw;right:-20%;opacity:.9}
+  .hero-bg-mark{width:88vw;right:-20%}
+  .hero-bg-mark img{opacity:.16}
   .hero-copy{max-width:100%}
 }
 
@@ -406,3 +407,52 @@ header,section,footer{position:relative;z-index:1}
   background:transparent;padding:0;cursor:pointer;transition:background .2s,width .3s;
 }
 .dot.active{background:var(--fg);width:22px;border-radius:5px}
+
+/* ================= NUEVO: formulario de reserva (panel de vidrio) ================= */
+
+/* El "coso grande" transparente que envuelve todo el formulario */
+.form-panel{
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--line-strong);
+  border-radius:calc(var(--radius) + 6px);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 1px 0 rgba(255,255,255,.06) inset, 0 20px 50px rgba(0,0,0,.4);
+  padding:32px 24px;
+}
+@media(max-width:600px){.form-panel{padding:26px 18px}}
+
+/* Los "cositos" transparentes: inputs, selects, tarjetas de barbero, horarios */
+.form-panel input,
+.form-panel select{
+  background:rgba(255,255,255,.045) !important;
+  border:1px solid var(--line-strong) !important;
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+.form-panel input:focus,
+.form-panel select:focus{
+  background:rgba(255,255,255,.08) !important;
+}
+.form-panel .barber-pick label.opt{
+  background:rgba(255,255,255,.045);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+.form-panel .barber-pick label.opt:has(input:checked){
+  background:rgba(255,255,255,.09);
+}
+.form-panel .opt-avatar{
+  background:rgba(255,255,255,.06);
+}
+.form-panel .time-pill{
+  background:rgba(255,255,255,.045);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+.form-panel .time-pill:hover{
+  background:rgba(255,255,255,.08);
+}
+.form-panel .time-pill.selected{
+  background:var(--fg);
+}
