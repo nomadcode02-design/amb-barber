@@ -52,11 +52,7 @@ img{max-width:100%;display:block}
     #f5f5f3 14px 28px,
     #7a7a76 28px 42px
   );
-  background-size:200% 100%;
-  animation:stripe-move 7s linear infinite;
 }
-@media (prefers-reduced-motion:reduce){.stripe{animation:none}}
-@keyframes stripe-move{to{background-position:120px 0}}
 
 /* ---- header ---- */
 header{
