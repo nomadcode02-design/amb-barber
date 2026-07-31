@@ -136,9 +136,10 @@ section{padding:64px 0}
 .service-badge-wrap{display:flex;padding-top:22px}
 .service-badge-wrap:first-child{padding-top:0}
 .service-badge{
-  background:var(--fg);color:var(--bg);
-  padding:9px 20px;border-radius:999px;
-  font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.05em;
+  color:var(--fg);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(22px,5vw,28px);
+  letter-spacing:.04em;
 }
 .service-row .num{color:var(--fg-dimmer);font-size:13px;width:28px;flex-shrink:0;font-variant-numeric:tabular-nums}
 .service-row .name{flex:1;font-size:19px}
