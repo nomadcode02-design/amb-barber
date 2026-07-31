@@ -3,7 +3,7 @@ const SERVICIOS = [
   { id: "corte-lavado", nombre: "Corte moderno", detalle: "Incluye lavado", precio: "$12.000", duracion: 45 },
   { id: "corte-mascarilla", nombre: "Corte moderno + Mascarilla facial", detalle: "Puntos negros", precio: "$15.000", duracion: 45 },
   { id: "corte-nutricion", nombre: "Corte moderno + Nutrición capilar", detalle: "", precio: "$20.000", duracion: 45 },
-  { id: "corte-completo", nombre: "Corte moderno + Mascarilla facial + Nutrición capilar", detalle: "", precio: "$25.000", duracion: 45 },
+  { id: "corte-completo", nombre: "Corte moderno + Mascarilla facial + Nutrición capilar", detalle: "", precio: "$25.000", duracion: 60 },
 ];
 
 const BARBEROS = [

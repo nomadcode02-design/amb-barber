@@ -163,9 +163,21 @@
 <script>
   // Servicios
   const list = document.getElementById('services-list');
+  const BADGES = {
+    'corte-lavado': 'AMB ESSENTIAL',
+    'corte-mascarilla': 'AMB NEXT LEVEL',
+    'corte-completo': 'AMB EXCLUSIVE',
+  };
   SERVICIOS.forEach((s,i)=>{
+    const badge = BADGES[s.id];
+    if (badge) {
+      const badgeWrap = document.createElement('div');
+      badgeWrap.className = 'service-badge-wrap';
+      badgeWrap.innerHTML = `<span class="service-badge">${badge}</span>`;
+      list.appendChild(badgeWrap);
+    }
     const row = document.createElement('div');
-    row.className='service-row';
+    row.className = 'service-row' + (badge ? ' has-badge' : '');
     row.innerHTML = `<span class="num">0${i+1}</span><span class="name">${s.nombre}${s.detalle?`<small>${s.detalle}</small>`:''}</span><span class="meta">${s.precio} · ${s.duracion} min</span>`;
     list.appendChild(row);
   });

@@ -132,6 +132,14 @@ section{padding:64px 0}
   padding:22px 0;border-bottom:1px solid var(--line);
   gap:16px;
 }
+.service-row.has-badge{padding-top:0}
+.service-badge-wrap{display:flex;padding-top:22px}
+.service-badge-wrap:first-child{padding-top:0}
+.service-badge{
+  background:var(--fg);color:var(--bg);
+  padding:7px 16px;border-radius:999px;
+  font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:.08em;
+}
 .service-row .num{color:var(--fg-dimmer);font-size:13px;width:28px;flex-shrink:0;font-variant-numeric:tabular-nums}
 .service-row .name{flex:1;font-size:19px}
 .service-row .name small{display:block;color:var(--fg-dim);font-size:13px;margin-top:3px;text-transform:none;letter-spacing:0}
@@ -369,19 +377,19 @@ header,section,footer,.form-shell{position:relative;z-index:1}
   display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
-  padding:0 calc(50% - 150px);
+  padding:0 calc(50% - 175px);
 }
 .carousel::-webkit-scrollbar{display:none}
 .carousel img{
-  flex:0 0 300px;width:300px;height:420px;object-fit:cover;
+  flex:0 0 350px;width:350px;height:490px;object-fit:cover;
   scroll-snap-align:center;
   border:1px solid var(--line-strong);
   border-radius:calc(var(--radius) + 6px);
   box-shadow:0 20px 50px rgba(0,0,0,.5);
 }
 @media(max-width:720px){
-  .carousel{padding:0 calc(50% - 110px)}
-  .carousel img{flex-basis:220px;width:220px;height:330px}
+  .carousel{padding:0 calc(50% - 145px)}
+  .carousel img{flex-basis:290px;width:290px;height:420px}
 }
 
 .carousel-dots{display:flex;justify-content:center;gap:10px;margin-top:20px}
