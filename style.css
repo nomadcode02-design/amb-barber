@@ -207,21 +207,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
 .step-card p{color:var(--fg-dim);font-size:14.5px;line-height:1.6}
 @media(max-width:720px){.steps{grid-template-columns:1fr}}
 
-/* ================= NUEVO: hero — solo texto, con el logo grande de fondo ================= */
+/* ================= NUEVO: hero — solo texto, con el logo grande de fondo global ================= */
 .hero-inner{position:relative}
 .hero-copy{position:relative;z-index:2;max-width:640px}
-.hero-bg-mark{
-  position:absolute;top:50%;right:-6%;
-  width:min(760px,72vw);aspect-ratio:1/1;
-  transform:translateY(-50%);
-  pointer-events:none;z-index:1;
-}
-.hero-bg-mark img{
-  width:100%;height:100%;object-fit:contain;
-  mix-blend-mode:screen;
-  opacity:.16;
-  filter:drop-shadow(0 0 60px rgba(255,255,255,.08));
-}
 .reserva-sub{color:var(--fg-dim);font-size:13px;letter-spacing:.03em;align-self:center}
 .scroll-hint{
   margin-top:56px;color:var(--fg-dim);font-size:11px;letter-spacing:.25em;text-transform:uppercase;
@@ -229,8 +217,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
 }
 .scroll-hint::before{content:'';width:20px;height:1px;background:var(--fg-dim)}
 @media(max-width:720px){
-  .hero-bg-mark{width:88vw;right:-20%}
-  .hero-bg-mark img{opacity:.16}
   .hero-copy{max-width:100%}
 }
 
@@ -314,20 +300,21 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
   background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.55) 100%);
 }
 
-/* ================= NUEVO: logo como textura sutil en TODA la web ================= */
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  background-image:url('assets/logo-amb-barbers.jpeg');
-  background-repeat:repeat;
-  background-size:220px;
-  opacity:.025;
-  filter:grayscale(100%) contrast(1.1);
-  mix-blend-mode:screen;
+/* ================= NUEVO: logo grande de fondo, fijo, en TODA la web (index y formulario) ================= */
+.site-bg-mark{
+  position:fixed;top:50%;left:50%;
+  width:min(900px,140vw);
+  aspect-ratio:1/1.3;
+  transform:translate(-50%,-50%);
   pointer-events:none;
   z-index:0;
 }
-header,section,footer{position:relative;z-index:1}
+.site-bg-mark img{
+  width:100%;height:100%;object-fit:contain;
+  mix-blend-mode:screen;
+  opacity:.13;
+}
+header,section,footer,.form-shell{position:relative;z-index:1}
 
 /* ================= NUEVO: hero como foto enmarcada (más prolijo que el recorte a sangre) ================= */
 .hero-visual{display:flex;align-items:center;justify-content:center}
