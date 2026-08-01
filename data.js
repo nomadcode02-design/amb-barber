@@ -11,10 +11,23 @@ const BARBEROS = [
   { id: "ale", nombre: "Ale" },
 ];
 
-// Horario de atención: Lunes a Sábado 09:00 - 21:00 hs
-const HORARIO_APERTURA = "09:00";
-const HORARIO_CIERRE = "21:00";
-const DIAS_ATENCION = [1,2,3,4,5,6]; // 0=domingo ... 6=sábado (cerrado domingo)
+// Horario de atención:
+// Lunes a Jueves: 09:00 a 13:00 y 17:00 a 21:00 (turno partido, mediodía cerrado)
+// Viernes y Sábado: 09:00 a 21:00 corrido
+// Domingo: cerrado
+//
+// Cada día de la semana (0=domingo ... 6=sábado) tiene una lista de franjas.
+// Un día cerrado es una lista vacía []. Si algún día tiene una sola franja
+// corrida (como viernes/sábado), va con un solo objeto en la lista.
+const HORARIOS_POR_DIA = {
+  0: [], // domingo - cerrado
+  1: [{ apertura: "09:00", cierre: "13:00" }, { apertura: "17:00", cierre: "21:00" }], // lunes
+  2: [{ apertura: "09:00", cierre: "13:00" }, { apertura: "17:00", cierre: "21:00" }], // martes
+  3: [{ apertura: "09:00", cierre: "13:00" }, { apertura: "17:00", cierre: "21:00" }], // miércoles
+  4: [{ apertura: "09:00", cierre: "13:00" }, { apertura: "17:00", cierre: "21:00" }], // jueves
+  5: [{ apertura: "09:00", cierre: "21:00" }], // viernes
+  6: [{ apertura: "09:00", cierre: "21:00" }], // sábado
+};
 
 // URL del backend del bot (se completa cuando esté desplegado)
 const API_URL = "https://amb-bot-production.up.railway.app/api/reservar";

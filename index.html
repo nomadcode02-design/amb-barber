@@ -187,10 +187,14 @@
   const hoursList = document.getElementById('hours-list');
   for (let d = 1; d <= 7; d++) {
     const dow = d % 7; // 1..6,0 -> Lunes..Sábado,Domingo
-    const abierto = DIAS_ATENCION.includes(dow);
+    const franjasDelDia = HORARIOS_POR_DIA[dow] || [];
+    const abierto = franjasDelDia.length > 0;
+    const textoHorario = abierto
+      ? franjasDelDia.map(f => `${f.apertura} a ${f.cierre}`).join(' y ') + ' hs'
+      : 'Cerrado';
     const row = document.createElement('div');
     row.className = 'hours-row' + (abierto ? '' : ' closed');
-    row.innerHTML = `<span class="day">${NOMBRES_DIA[dow]}</span><span class="time">${abierto ? HORARIO_APERTURA + ' a ' + HORARIO_CIERRE + ' hs' : 'Cerrado'}</span>`;
+    row.innerHTML = `<span class="day">${NOMBRES_DIA[dow]}</span><span class="time">${textoHorario}</span>`;
     hoursList.appendChild(row);
   }  // Carrusel de fotos del local: arma los puntos y sincroniza con el scroll
   const carousel = document.getElementById('carousel');
