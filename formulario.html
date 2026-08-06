@@ -157,12 +157,20 @@
     barberPick.appendChild(l);
   });
 
-  // Servicios
+  // Servicios (con el nombre de la experiencia AMB, igual que en la home)
+  const BADGES_SERVICIOS = {
+    'corte-lavado': 'AMB ESSENTIAL',
+    'corte-mascarilla': 'AMB NEXT LEVEL',
+    'corte-completo': 'AMB EXCLUSIVE',
+  };
   const servicioSel = document.getElementById('servicio');
   SERVICIOS.forEach(s=>{
     const opt = document.createElement('option');
     opt.value = s.id;
-    opt.textContent = `${s.nombre}${s.detalle ? ' - '+s.detalle : ''} (${s.precio})`;
+    const badge = BADGES_SERVICIOS[s.id];
+    opt.textContent = badge
+      ? `${badge} - (${s.nombre}) ${s.precio}`
+      : `${s.nombre}${s.detalle ? ' - '+s.detalle : ''} (${s.precio})`;
     servicioSel.appendChild(opt);
   });
 
