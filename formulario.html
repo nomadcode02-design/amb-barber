@@ -60,34 +60,41 @@
   .time-pill.disabled{opacity:.35;pointer-events:none}
   .time-empty{color:var(--fg-dim);font-size:14px;grid-column:1/-1}
 
-  .modal-overlay{
-    position:fixed;inset:0;background:rgba(0,0,0,.75);
+  /* ---- cartel de confirmación ---- */
+  .confirm-overlay{
+    position:fixed;inset:0;z-index:50;
+    background:rgba(5,5,5,.88);
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
     display:flex;align-items:center;justify-content:center;
-    z-index:100;padding:24px;
+    padding:24px;
+    opacity:0;pointer-events:none;
+    transition:opacity .25s ease;
   }
-  .modal-overlay.hidden{display:none}
-  .modal-card{
-    background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);
-    max-width:380px;width:100%;padding:40px 28px;text-align:center;
+  .confirm-overlay.show{opacity:1;pointer-events:auto}
+  .confirm-card{
+    max-width:400px;width:100%;
+    background:var(--panel);border:1px solid var(--line-strong);
+    border-radius:calc(var(--radius) + 10px);
+    padding:44px 32px 36px;
+    text-align:center;
+    box-shadow:0 30px 80px rgba(0,0,0,.6);
+    transform:translateY(14px) scale(.97);
+    transition:transform .25s ease;
   }
-  .modal-logo{
-    width:88px;height:88px;border-radius:50%;margin:0 auto 24px;
-    display:flex;align-items:center;justify-content:center;overflow:hidden;
-    background:#000;
+  .confirm-overlay.show .confirm-card{transform:translateY(0) scale(1)}
+  .confirm-logo{
+    width:88px;height:88px;border-radius:50%;overflow:hidden;
+    margin:0 auto 22px;border:2px solid var(--line-strong);
+    display:flex;align-items:center;justify-content:center;background:#000;
   }
-  .modal-logo img{width:100%;height:100%;object-fit:cover}
-  .modal-check{
-    width:56px;height:56px;border-radius:50%;margin:0 auto 20px;
+  .confirm-logo img{width:100%;height:100%;object-fit:cover}
+  .confirm-check{
+    width:52px;height:52px;margin:0 auto 18px;
     display:flex;align-items:center;justify-content:center;
-    color:var(--fg);
   }
-  .modal-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.05em;margin-bottom:16px}
-  .modal-text{color:var(--fg-dim);font-size:14px;line-height:1.6;margin-bottom:28px}
-  .modal-text strong{color:var(--fg)}
-  .modal-close-btn{
-    width:100%;border:0;cursor:pointer;font-family:inherit;font-weight:600;
-    background:var(--fg);color:var(--bg);padding:16px;border-radius:var(--radius);font-size:15px;
-  }
+  .confirm-card h2{font-size:32px;margin-bottom:16px}
+  .confirm-card p{color:var(--fg-dim);font-size:14.5px;line-height:1.7;margin-bottom:8px}
+  .confirm-card .btn-primary{width:100%;margin-top:24px;border:0;cursor:pointer;font-family:inherit;font-size:15px}
 </style>
 </head>
 <body>
@@ -158,6 +165,21 @@
       Seguinos en Instagram
     </a>
     <a class="btn btn-outline" href="index.html">Volver al inicio</a>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-card">
+    <div class="confirm-logo"><img src="assets/logo-a-mark.jpeg" alt="AMB BARBERS"></div>
+    <div class="confirm-check">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 12.5L9.5 18L20 6" stroke="#f2ede2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>¡Reserva enviada!</h2>
+    <p>Le llegó tu solicitud de turno a AMB BARBERS.</p>
+    <p>En instantes te confirmamos por WhatsApp.</p>
+    <button type="button" class="btn btn-primary" id="confirm-close">Entendido</button>
   </div>
 </div>
 
@@ -337,10 +359,11 @@
       });
       const respuesta = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(respuesta.error || 'No se pudo enviar');
-      status.className='ok';
-      status.textContent = '¡Reserva enviada! Te llega la confirmación por WhatsApp en instantes.';
+      status.className='';
+      status.textContent='';
       form.reset();
       horarioPick.innerHTML = '<span class="time-empty">Elegí un día primero</span>';
+      document.getElementById('confirm-overlay').classList.add('show');
     } catch (err) {
       status.className='err';
       status.textContent = err.message || 'Hubo un problema al enviar la reserva. Probá de nuevo o escribinos por WhatsApp.';
@@ -348,6 +371,15 @@
       // a la vez), refrescamos la grilla para que ya no aparezca disponible.
       if (res && res.status === 409) actualizarHorarios();
     }
+  });
+
+  // Cerrar el cartel de "reserva enviada"
+  const confirmOverlay = document.getElementById('confirm-overlay');
+  document.getElementById('confirm-close').addEventListener('click', () => {
+    confirmOverlay.classList.remove('show');
+  });
+  confirmOverlay.addEventListener('click', (e) => {
+    if (e.target === confirmOverlay) confirmOverlay.classList.remove('show');
   });
 
   // Doble clic en el logo → acceso directo al panel de control
