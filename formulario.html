@@ -94,7 +94,12 @@
   }
   .confirm-card h2{font-size:32px;margin-bottom:16px}
   .confirm-card p{color:var(--fg-dim);font-size:14.5px;line-height:1.7;margin-bottom:8px}
-  .confirm-card .btn-primary{width:100%;margin-top:24px;border:0;cursor:pointer;font-family:inherit;font-size:15px}
+  .btn-whatsapp-confirm {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background-color: #25D366; color: #000; font-weight: 600; width: 100%;
+    padding: 14px; border-radius: var(--radius); text-decoration: none; margin-top: 18px;
+  }
+  .confirm-card .btn-secondary{width:100%;margin-top:10px;border:0;cursor:pointer;font-family:inherit;font-size:14px;background:transparent;color:var(--fg-dim)}
 </style>
 </head>
 <body>
@@ -176,15 +181,21 @@
         <path d="M4 12.5L9.5 18L20 6" stroke="#f2ede2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    <h2>¡Reserva enviada!</h2>
-    <p>Le llegó tu solicitud de turno a AMB BARBERS.</p>
-    <p>En instantes te confirmamos por WhatsApp.</p>
-    <button type="button" class="btn btn-primary" id="confirm-close">Entendido</button>
+    <h2>¡Casi listo!</h2>
+    <p>Para asegurar tu lugar, tocá el botón para enviar tu confirmación por WhatsApp.</p>
+    
+    <a href="#" id="btn-wa-link" target="_blank" class="btn-whatsapp-confirm">
+      Confirmar por WhatsApp 💬
+    </a>
+    <button type="button" class="btn-secondary" id="confirm-close">Cerrar ventana</button>
   </div>
 </div>
 
 <script src="data.js"></script>
 <script>
+  // Número oficial del bot para abrir el chat
+  const NUMERO_WHATSAPP_BOT = "5492646091538";
+
   // Barberos
   const FOTOS_BARBEROS = {
     sebastian: 'assets/barbero-sebastian.jpeg',
@@ -208,7 +219,7 @@
     barberPick.appendChild(l);
   });
 
-  // Servicios (con el nombre de la experiencia AMB, igual que en la home)
+  // Servicios
   const BADGES_SERVICIOS = {
     'corte-lavado': 'AMB ESSENTIAL',
     'corte-mascarilla': 'AMB NEXT LEVEL',
@@ -225,15 +236,10 @@
     servicioSel.appendChild(opt);
   });
 
-  // Horarios disponibles según franja de atención (cada 1 hora), como botones.
-  // Si ya se eligió barbero, se consulta /api/ocupados para tachar los horarios
-  // que ese barbero ya tiene tomados ese día.
   const diaInput = document.getElementById('dia');
   const horarioInput = document.getElementById('horario');
   const horarioPick = document.getElementById('horario-pick');
 
-  // Fecha de hoy en formato YYYY-MM-DD usando hora LOCAL (no UTC), para que
-  // no salte al día siguiente cuando ya es de noche en Argentina.
   function fechaLocalISO(d) {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -242,8 +248,6 @@
   }
   diaInput.min = fechaLocalISO(new Date());
 
-  // API_URL apunta al endpoint de reserva (ej: https://tu-servidor/api/reservar).
-  // Para consultar disponibilidad usamos la misma base, cambiando el endpoint.
   const API_BASE = API_URL.replace(/\/api\/reservar\/?$/, '');
 
   async function actualizarHorarios() {
@@ -263,8 +267,6 @@
       return;
     }
 
-    // Armamos todos los horarios posibles recorriendo cada franja del día
-    // (puede haber más de una, ej: turno partido mañana/tarde)
     const horariosPosibles = [];
     franjasDelDia.forEach(({ apertura, cierre }) => {
       const [hIni, mIni] = apertura.split(':').map(Number);
@@ -281,7 +283,6 @@
 
     const barberoSeleccionado = form.barbero.value;
 
-    // Si ya eligió barbero, consultamos qué horarios tiene ocupados ese día
     let ocupados = [];
     if (barberoSeleccionado) {
       horarioPick.innerHTML = '<span class="time-empty">Consultando disponibilidad...</span>';
@@ -293,9 +294,6 @@
         }
       } catch (e) {
         console.error('No se pudo consultar disponibilidad:', e);
-        // Si falla la consulta (por ejemplo sin internet), preferimos mostrar
-        // todos los horarios igual antes que trabar la reserva por completo.
-        // El backend igual va a rechazar un horario duplicado al confirmar.
       }
       horarioPick.innerHTML = '';
     }
@@ -322,11 +320,8 @@
   }
 
   diaInput.addEventListener('change', actualizarHorarios);
-  // Los radios de barbero se agregan dinámicamente, pero "change" burbujea,
-  // así que escuchar en el contenedor alcanza para detectar cualquier selección.
   barberPick.addEventListener('change', actualizarHorarios);
 
-  // Envío al backend (el bot manda la confirmación automática por WhatsApp)
   const form = document.getElementById('reserva-form');
   const status = document.getElementById('status');
 
@@ -341,13 +336,17 @@
 
     status.className=''; status.textContent = 'Enviando reserva...';
 
+    const nombreCliente = document.getElementById('nombre').value;
+    const diaElegido = diaInput.value;
+    const horaElegida = horarioInput.value;
+
     const data = {
-      nombre: document.getElementById('nombre').value,
+      nombre: nombreCliente,
       whatsapp: document.getElementById('whatsapp').value,
       barbero: form.barbero.value,
       servicio: servicioSel.value,
-      dia: diaInput.value,
-      horario: horarioInput.value,
+      dia: diaElegido,
+      horario: horaElegida,
     };
 
     let res;
@@ -359,21 +358,24 @@
       });
       const respuesta = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(respuesta.error || 'No se pudo enviar');
+      
       status.className='';
       status.textContent='';
+      
+      // Armar el link de WhatsApp dinámico
+      const textoMensaje = encodeURIComponent(`Hola! Acabo de sacar un turno desde la web a nombre de ${nombreCliente} para el día ${diaElegido} a las ${horaElegida} hs.`);
+      document.getElementById('btn-wa-link').href = `https://wa.me/${NUMERO_WHATSAPP_BOT}?text=${textoMensaje}`;
+
       form.reset();
       horarioPick.innerHTML = '<span class="time-empty">Elegí un día primero</span>';
       document.getElementById('confirm-overlay').classList.add('show');
     } catch (err) {
       status.className='err';
       status.textContent = err.message || 'Hubo un problema al enviar la reserva. Probá de nuevo o escribinos por WhatsApp.';
-      // Si el horario se ocupó justo antes de confirmar (dos personas reservando
-      // a la vez), refrescamos la grilla para que ya no aparezca disponible.
       if (res && res.status === 409) actualizarHorarios();
     }
   });
 
-  // Cerrar el cartel de "reserva enviada"
   const confirmOverlay = document.getElementById('confirm-overlay');
   document.getElementById('confirm-close').addEventListener('click', () => {
     confirmOverlay.classList.remove('show');
@@ -382,7 +384,6 @@
     if (e.target === confirmOverlay) confirmOverlay.classList.remove('show');
   });
 
-  // Doble clic en el logo → acceso directo al panel de control
   const brandLink = document.getElementById('brand-link');
   if (brandLink) {
     let clickTimer = null;
