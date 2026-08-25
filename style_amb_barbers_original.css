@@ -1,0 +1,450 @@
+:root{
+  --bg:#050505;
+  --bg-alt:#0e0e0e;
+  --panel:#131313;
+  --panel-2:#1a1a1a;
+  --fg:#fafaf7;
+  --fg-dim:#7a7a76;
+  --fg-dimmer:#4d4d4a;
+  --line:#262626;
+  --line-strong:#3a3a38;
+  --accent:#ffffff;
+  --radius:16px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html{-webkit-tap-highlight-color:transparent}
+
+body{
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(255,255,255,.05), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 0%, rgba(255,255,255,.03), transparent 55%),
+    var(--bg);
+  color:var(--fg);
+  font-family:'Work Sans',sans-serif;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+h1,h2,h3,.display{
+  font-family:'Bebas Neue',sans-serif;
+  letter-spacing:.03em;
+  font-weight:400;
+  line-height:.92;
+  text-transform:uppercase;
+}
+
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+::selection{background:var(--fg);color:var(--bg)}
+
+/* ---- signature: barber-pole stripe divider (mono: negro / blanco / gris) ---- */
+.stripe{
+  height:6px;
+  background:repeating-linear-gradient(
+    -45deg,
+    #000 0 14px,
+    #f5f5f3 14px 28px,
+    #7a7a76 28px 42px
+  );
+}
+
+/* ---- header ---- */
+header{
+  position:sticky;top:0;z-index:20;
+  background:rgba(5,5,5,.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand img{height:36px;width:36px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid var(--line-strong)}
+.brand span{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.1em;white-space:nowrap}
+.nav a.cta{
+  border:1px solid var(--fg);
+  color:var(--fg);
+  padding:11px 18px;
+  font-size:12px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  font-weight:600;
+  white-space:nowrap;
+  transition:background .15s,color .15s;
+}
+.nav a.cta:hover,.nav a.cta:active{background:var(--fg);color:var(--bg)}
+
+/* ---- hero ---- */
+.hero{padding:88px 0 56px;position:relative;overflow:hidden}
+.hero .eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  color:var(--fg-dim);letter-spacing:.3em;text-transform:uppercase;font-size:11px;margin-bottom:20px;
+}
+.hero .eyebrow::before{content:'';width:24px;height:1px;background:var(--fg-dim)}
+.hero h1{font-size:clamp(48px,13vw,124px);}
+.hero h1 em{font-style:normal;-webkit-text-stroke:1.5px var(--fg);color:transparent}
+.hero p{max-width:520px;color:var(--fg-dim);margin-top:22px;font-size:16px}
+.hero .actions{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:16px 30px;border-radius:var(--radius);
+  font-size:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;
+  transition:transform .15s, background .15s, color .15s, border-color .15s;
+  min-height:50px;
+  border:1px solid transparent;
+}
+.btn-primary{background:var(--fg);color:var(--bg)}
+.btn-primary:hover{transform:translateY(-2px);background:#d8d8d4}
+.btn-outline{border:1px solid var(--line-strong);color:var(--fg)}
+.btn-outline:hover{border-color:var(--fg)}
+
+/* ---- section shell ---- */
+section{padding:64px 0}
+.section-head{margin-bottom:36px}
+.section-head .eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  color:var(--fg-dim);letter-spacing:.3em;text-transform:uppercase;font-size:11px;margin-bottom:10px;
+}
+.section-head .eyebrow::before{content:'';width:24px;height:1px;background:var(--fg-dim)}
+.section-head h2{font-size:clamp(32px,7vw,52px)}
+
+/* ---- philosophy ---- */
+.philosophy{background:rgba(14,14,14,.72);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.philosophy p{max-width:680px;color:var(--fg-dim);font-size:17px}
+.philosophy p+p{margin-top:14px}
+
+/* ---- gallery ---- */
+.gallery{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:var(--line)}
+.gallery img{width:100%;height:170px;object-fit:cover;border-radius:var(--radius);transition:filter .25s}
+.gallery img:hover{filter:grayscale(0)}
+@media(max-width:720px){.gallery{grid-template-columns:repeat(3,1fr)}.gallery img{height:120px}}
+@media(max-width:420px){.gallery{grid-template-columns:repeat(2,1fr)}.gallery img{height:150px}}
+
+/* ---- services ---- */
+.services{border-top:1px solid var(--line)}
+.service-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:22px 0;border-bottom:1px solid var(--line);
+  gap:16px;
+}
+.service-row.has-badge{padding-top:0}
+.service-badge-wrap{display:flex;padding-top:22px}
+.service-badge-wrap:first-child{padding-top:0}
+.service-badge{
+  color:var(--fg);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(22px,5vw,28px);
+  letter-spacing:.04em;
+}
+.service-row .num{color:var(--fg-dimmer);font-size:13px;width:28px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.service-row .name{flex:1;font-size:19px}
+.service-row .name small{display:block;color:var(--fg-dim);font-size:13px;margin-top:3px;text-transform:none;letter-spacing:0}
+.service-row .meta{color:var(--fg);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.03em;white-space:nowrap}
+@media(max-width:520px){
+  .service-row{flex-wrap:wrap}
+  .service-row .name{width:100%}
+  .service-row .meta{margin-left:40px}
+}
+
+/* ---- barbers ---- */
+.barbers{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
+.barber-card{background:var(--panel);overflow:hidden;position:relative}
+.barber-card img{width:100%;height:300px;object-fit:cover;border-radius:var(--radius)}
+.barber-card .info{padding:18px 20px;border-top:1px solid var(--line)}
+.barber-card h3{font-size:26px}
+.barber-card p{color:var(--fg-dim);font-size:13px;margin-top:4px;letter-spacing:.1em;text-transform:uppercase}
+@media(max-width:600px){.barbers{grid-template-columns:1fr}.barber-card img{height:260px}}
+
+/* ---- location ---- */
+.location{display:grid;grid-template-columns:1fr 1fr;gap:2px;align-items:stretch;background:var(--line)}
+.location .details{background:var(--panel);padding:28px;display:flex;flex-direction:column;justify-content:center}
+.location .details p{color:var(--fg-dim);margin-bottom:12px;font-size:15px}
+.location .details p:last-child{color:var(--fg);letter-spacing:.05em}
+.location iframe{width:100%;height:100%;min-height:280px;border:0;filter:grayscale(100%) invert(92%) contrast(85%)}
+@media(max-width:720px){.location{grid-template-columns:1fr}.location iframe{min-height:240px}}
+
+/* ---- footer ---- */
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--fg-dim);font-size:13px}
+footer .row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.socials{display:flex;gap:16px}
+.socials img{height:20px;width:20px;opacity:.7;filter:grayscale(100%)}
+.socials a:hover img{opacity:1}
+
+/* ---- mobile refinements ---- */
+@media(max-width:600px){
+  .wrap{padding:0 18px}
+  .hero{padding:64px 0 40px}
+  .hero .actions{flex-direction:column}
+  .hero .actions .btn{width:100%}
+  section{padding:48px 0}
+  .nav a.cta{padding:9px 14px;font-size:11px}
+  .brand span{font-size:17px}
+}
+
+/* ---- accessibility ---- */
+a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+
+/* ================= NUEVO: sección "experiencia" con pasos ================= */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line);margin-top:8px}
+.step-card{
+  background:var(--panel);padding:32px 26px;position:relative;overflow:hidden;
+  transition:background .2s;
+}
+.step-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
+  opacity:0;transition:opacity .25s;
+}
+.step-card:hover{background:var(--panel-2)}
+.step-card:hover::before{opacity:1}
+.step-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border:1px solid var(--line-strong);
+  font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.05em;
+  margin-bottom:22px;color:var(--fg-dim);
+}
+.step-card h3{font-size:22px;margin-bottom:10px;letter-spacing:.02em}
+.step-card p{color:var(--fg-dim);font-size:14.5px;line-height:1.6}
+@media(max-width:720px){.steps{grid-template-columns:1fr}}
+
+/* ================= NUEVO: hero — solo texto, con el logo grande de fondo global ================= */
+.hero-inner{position:relative}
+.hero-copy{position:relative;z-index:2;max-width:640px}
+.reserva-sub{color:var(--fg-dim);font-size:13px;letter-spacing:.03em;align-self:center}
+.scroll-hint{
+  margin-top:56px;color:var(--fg-dim);font-size:11px;letter-spacing:.25em;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;
+}
+.scroll-hint::before{content:'';width:20px;height:1px;background:var(--fg-dim)}
+@media(max-width:720px){
+  .hero-copy{max-width:100%}
+}
+
+/* ================= NUEVO: brillo / glass en botones y tarjetas ================= */
+.btn-primary{position:relative;overflow:hidden}
+.btn-primary::after{
+  content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(115deg,transparent,rgba(0,0,0,.25),transparent);
+  transform:skewX(-20deg);transition:left .5s ease;
+}
+.btn-primary:hover::after{left:130%}
+
+.glass{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--line-strong);
+  backdrop-filter:blur(6px);
+  box-shadow:0 1px 0 rgba(255,255,255,.06) inset, 0 20px 40px rgba(0,0,0,.35);
+}
+
+/* ================= NUEVO: equipo (grid glossy) ================= */
+.barbers{grid-template-columns:repeat(2,1fr)}
+.barber-card{position:relative}
+.barber-card::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.55) 100%);
+}
+.barber-card img{transition:transform .4s ease, filter .4s ease}
+.barber-card:hover img{transform:scale(1.04)}
+
+/* ================= NUEVO: servicios en columnas ================= */
+.services-grid{display:grid;grid-template-columns:1fr;gap:0 48px}
+@media(min-width:760px){.services-grid{grid-template-columns:1fr 1fr}}
+.services-col .col-label{
+  color:var(--fg-dim);letter-spacing:.25em;text-transform:uppercase;font-size:11px;
+  padding-bottom:14px;border-bottom:1px solid var(--line-strong);margin-bottom:6px;
+}
+
+/* ================= NUEVO: testimonios (placeholder) ================= */
+.testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line)}
+.testi-card{background:var(--panel);padding:28px;display:flex;flex-direction:column;gap:16px;min-height:170px}
+.testi-card .stars{color:var(--fg-dim);letter-spacing:.15em;font-size:13px}
+.testi-card blockquote{color:var(--fg-dim);font-size:14.5px;line-height:1.6;flex:1}
+.testi-card .who{font-size:13px;color:var(--fg-dimmer);letter-spacing:.05em}
+.testi-placeholder{
+  grid-column:1/-1;padding:40px 24px;text-align:center;
+  color:var(--fg-dimmer);font-size:13px;letter-spacing:.05em;
+  border:1px dashed var(--line-strong);background:transparent;
+}
+@media(max-width:760px){.testimonials{grid-template-columns:1fr}}
+
+/* ================= NUEVO: horarios en Ubicación ================= */
+.hours{margin-top:20px;border-top:1px solid var(--line)}
+.hours-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+.hours-row .day{color:var(--fg)}
+.hours-row .time{color:var(--fg-dim)}
+.hours-row.closed .time{color:var(--fg-dimmer)}
+.location .details .btn{margin-top:24px;align-self:flex-start}
+
+/* ================= NUEVO: logo de fondo en sección equipo ================= */
+.barbers-wrap{position:relative;overflow:hidden}
+.team-watermark{
+  position:absolute;
+  top:50%;left:50%;
+  width:min(900px,140%);
+  transform:translate(-50%,-50%) rotate(-4deg);
+  opacity:.06;
+  filter:grayscale(100%) contrast(1.1);
+  pointer-events:none;
+  z-index:0;
+  mix-blend-mode:screen;
+}
+.barbers-wrap .section-head,.barbers-wrap .barbers{position:relative;z-index:1}
+.brand img{background:#000}
+
+/* ================= NUEVO: foto real en el hero (reemplaza el blob) ================= */
+.hero-photo{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+}
+.hero-visual::before{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.55) 100%);
+}
+
+/* ================= NUEVO: logo grande de fondo, fijo, en TODA la web (index y formulario) ================= */
+.site-bg-mark{
+  position:fixed;top:50%;left:50%;
+  width:min(1000px,150vw);
+  aspect-ratio:1/1.3;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  z-index:0;
+}
+.site-bg-mark img{
+  width:100%;height:100%;object-fit:contain;
+  mix-blend-mode:screen;
+  opacity:.24;
+}
+header,section,footer,.form-shell{position:relative;z-index:1}
+
+/* ================= NUEVO: hero como foto enmarcada (más prolijo que el recorte a sangre) ================= */
+.hero-visual{display:flex;align-items:center;justify-content:center}
+.photo-frame{
+  position:relative;width:100%;aspect-ratio:4/5;
+  padding:14px;
+  border:1px solid var(--line-strong);
+  border-radius:calc(var(--radius) + 10px);
+  background:linear-gradient(160deg,#161616,#0a0a0a);
+  box-shadow:0 40px 80px rgba(0,0,0,.55);
+  overflow:hidden;
+}
+.photo-frame::before{
+  content:'';position:absolute;inset:-1px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:inherit;
+  pointer-events:none;
+}
+.photo-frame img.frame-photo{
+  width:100%;height:100%;object-fit:cover;
+  border-radius:var(--radius);
+  display:block;
+}
+.frame-shine{
+  position:absolute;inset:14px;pointer-events:none;
+  background:linear-gradient(115deg,rgba(255,255,255,.16) 0%,transparent 30%);
+}
+
+/* Logo grande, transparentado (el negro se funde con el fondo) + aura blanca */
+.emblem-aura{
+  position:absolute;top:50%;left:50%;
+  width:80%;aspect-ratio:1/1;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle, rgba(255,255,255,.4) 0%, rgba(255,255,255,.12) 35%, transparent 70%);
+  filter:blur(18px);
+  pointer-events:none;
+}
+.frame-emblem{
+  position:absolute;top:50%;left:50%;
+  width:72%;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:screen;
+  filter:drop-shadow(0 0 30px rgba(255,255,255,.35)) contrast(1.15);
+  pointer-events:none;
+}
+@media(max-width:860px){.photo-frame{aspect-ratio:16/10}}
+
+/* ================= NUEVO: carrusel de galería (una foto a la vez, deslizable) ================= */
+.gallery-frame{
+  padding:28px 0;
+  box-shadow:
+    0 0 90px rgba(255,255,255,.05),
+    0 0 160px rgba(255,255,255,.03);
+}
+.carousel{
+  display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  padding:0 calc(50% - 190px);
+}
+.carousel::-webkit-scrollbar{display:none}
+.carousel img{
+  flex:0 0 380px;width:380px;height:530px;object-fit:cover;
+  scroll-snap-align:center;
+  border:1px solid var(--line-strong);
+  border-radius:calc(var(--radius) + 6px);
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+}
+@media(max-width:720px){
+  .carousel{padding:0 calc(50% - 42vw)}
+  .carousel img{flex-basis:84vw;width:84vw;height:calc(84vw * 1.4)}
+}
+
+.carousel-dots{display:flex;justify-content:center;gap:10px;margin-top:20px}
+.dot{
+  width:8px;height:8px;border-radius:50%;border:1px solid var(--line-strong);
+  background:transparent;padding:0;cursor:pointer;transition:background .2s,width .3s;
+}
+.dot.active{background:var(--fg);width:22px;border-radius:5px}
+
+/* ================= NUEVO: formulario de reserva (panel de vidrio) ================= */
+
+/* El "coso grande" transparente que envuelve todo el formulario */
+.form-panel{
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--line-strong);
+  border-radius:calc(var(--radius) + 6px);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 1px 0 rgba(255,255,255,.06) inset, 0 20px 50px rgba(0,0,0,.4);
+  padding:32px 24px;
+}
+@media(max-width:600px){.form-panel{padding:26px 18px}}
+
+/* Los "cositos" transparentes: inputs, selects, tarjetas de barbero, horarios */
+.form-panel input,
+.form-panel select{
+  background:rgba(255,255,255,.045) !important;
+  border:1px solid var(--line-strong) !important;
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+.form-panel input:focus,
+.form-panel select:focus{
+  background:rgba(255,255,255,.08) !important;
+}
+.form-panel .barber-pick label.opt{
+  background:rgba(255,255,255,.045);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+.form-panel .barber-pick label.opt:has(input:checked){
+  background:rgba(255,255,255,.09);
+}
+.form-panel .opt-avatar{
+  background:rgba(255,255,255,.06);
+}
+.form-panel .time-pill{
+  background:rgba(255,255,255,.045);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+.form-panel .time-pill:hover{
+  background:rgba(255,255,255,.08);
+}
+.form-panel .time-pill.selected{
+  background:var(--fg);
+}
