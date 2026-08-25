@@ -88,6 +88,17 @@
     display:inline-block;margin-top:8px;font-size:11px;font-weight:600;
     color:#1a1305;background:#d9b36a;padding:4px 10px;border-radius:20px;
   }
+  .clientes-section .clientes-header{
+    display:flex;justify-content:space-between;align-items:center;cursor:pointer;
+  }
+  .clientes-section .clientes-header .chevron{transition:transform .2s;color:var(--fg-dim)}
+  .clientes-section.open .clientes-header .chevron{transform:rotate(180deg)}
+  .clientes-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+  .clientes-section.open .clientes-body{max-height:8000px;margin-top:18px}
+  .clientes-count-badge{
+    font-family:'Bebas Neue',sans-serif;font-size:18px;
+    border:1px solid var(--line-strong);padding:4px 14px;
+  }
   .clientes-filtros{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
   .clientes-buscador{
     width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--fg);
@@ -251,21 +262,26 @@
   </div>
 
   <div class="clientes-section" id="clientes-section" style="display:none">
-    <h3>Clientes</h3>
-    <p class="sub">Según cuántos cortes confirmados tiene cada uno, y hace cuánto no viene. La tarjeta de fidelidad se completa cada 10 cortes: en el 5° gana 50% de descuento (en cualquier servicio) y en el 10° un corte gratis — se marca como usado solo, apenas se confirme el turno siguiente.</p>
-    <div class="clientes-leyenda">
-      <span><span class="dot verde"></span> Habitual (6+ cortes)</span>
-      <span><span class="dot amarillo"></span> Ocasional (3-5)</span>
-      <span><span class="dot rojo"></span> Poco frecuente (1-2)</span>
+    <div class="clientes-header" id="clientes-header">
+      <h3>Clientes <span class="clientes-count-badge" id="clientes-count-badge">0</span></h3>
+      <span class="chevron">▾</span>
     </div>
-    <input type="text" id="clientes-buscador" class="clientes-buscador" placeholder="Buscar por nombre o número...">
-    <div class="clientes-filtros" id="clientes-filtros">
-      <button class="filtro-btn activo" data-filtro="todos">Todos</button>
-      <button class="filtro-btn" data-filtro="verde">Habituales</button>
-      <button class="filtro-btn" data-filtro="amarillo">Ocasionales</button>
-      <button class="filtro-btn" data-filtro="rojo">Poco frecuentes</button>
+    <div class="clientes-body" id="clientes-body">
+      <p class="sub">Según cuántos cortes confirmados tiene cada uno, y hace cuánto no viene. La tarjeta de fidelidad se completa cada 10 cortes: en el 5° gana 50% de descuento (en cualquier servicio) y en el 10° un corte gratis — se marca como usado solo, apenas se confirme el turno siguiente.</p>
+      <div class="clientes-leyenda">
+        <span><span class="dot verde"></span> Habitual (6+ cortes)</span>
+        <span><span class="dot amarillo"></span> Ocasional (3-5)</span>
+        <span><span class="dot rojo"></span> Poco frecuente (1-2)</span>
+      </div>
+      <input type="text" id="clientes-buscador" class="clientes-buscador" placeholder="Buscar por nombre o número...">
+      <div class="clientes-filtros" id="clientes-filtros">
+        <button class="filtro-btn activo" data-filtro="todos">Todos</button>
+        <button class="filtro-btn" data-filtro="verde">Habituales</button>
+        <button class="filtro-btn" data-filtro="amarillo">Ocasionales</button>
+        <button class="filtro-btn" data-filtro="rojo">Poco frecuentes</button>
+      </div>
+      <div id="clientes-list"></div>
     </div>
-    <div id="clientes-list"></div>
   </div>
 
   <div class="month-section" id="month-section" style="display:none">
@@ -500,6 +516,7 @@
     }).sort((a, b) => b.cantidad - a.cantidad);
 
     document.getElementById('clientes-section').style.display = clientesCalculados.length ? 'block' : 'none';
+    document.getElementById('clientes-count-badge').textContent = clientesCalculados.length;
     pintarListaClientes();
   }
 
@@ -542,6 +559,10 @@
       `;
     }).join('');
   }
+
+  document.getElementById('clientes-header').addEventListener('click', () => {
+    document.getElementById('clientes-section').classList.toggle('open');
+  });
 
   document.getElementById('clientes-buscador').addEventListener('input', (e) => {
     busquedaClienteActiva = e.target.value.trim();
