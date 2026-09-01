@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMB BARBERS | Turnos Online</title>
+<meta name="description" content="Reservá tu turno online en AMB BARBERS, San Juan. Elegí barbero, servicio y horario en segundos.">
+
+<!-- Open Graph: sin esto, WhatsApp Estado no arma el preview con foto -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nomadcode02-design.github.io/amb-barber/">
+<meta property="og:title" content="AMB BARBERS | Turnos Online">
+<meta property="og:description" content="Reservá tu turno online en AMB BARBERS, San Juan. Elegí barbero, servicio y horario en segundos.">
+<meta property="og:image" content="https://nomadcode02-design.github.io/amb-barber/assets/preview.jpg.jpeg">
+<meta property="og:image:secure_url" content="https://nomadcode02-design.github.io/amb-barber/assets/preview.jpg.jpeg">
+<meta property="og:locale" content="es_AR">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AMB BARBERS | Turnos Online">
+<meta name="twitter:description" content="Reservá tu turno online en AMB BARBERS, San Juan. Elegí barbero, servicio y horario en segundos.">
+<meta name="twitter:image" content="https://nomadcode02-design.github.io/amb-barber/assets/preview.jpg.jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-bg-mark"><img src="assets/logo-amb-barbers-watermark.jpg" alt=""></div>
+
+<header>
+  <div class="nav wrap">
+    <a href="index.html" class="brand" id="brand-link">
+      <img src="assets/logo-a-mark.jpeg" alt="AMB BARBERS">
+      <span>AMB BARBERS</span>
+    </a>
+    <a class="cta" href="formulario.html">Sacar turno</a>
+  </div>
+</header>
+<div class="stripe"></div>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <div class="eyebrow">Barbería · San Juan · Santa Rosa - 25 de Mayo</div>
+      <h1>No venimos a cortarte el pelo.<br><em>Venimos a cambiarte la semana.</em></h1>
+      <p class="fine-print" style="font-size:14px;color:var(--fg-dim);letter-spacing:.9px;margin-top:26px;margin-bottom:28px;line-height:1.8;">Asesoría, criterio y un equipo que te escucha antes de prender la máquina.<br>No improvisamos.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="formulario.html">Sacar turno →</a>
+        <span class="reserva-sub">Reservás online en 30 segundos</span>
+      </div>
+      <div class="scroll-hint">— Scroll</div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe"></div>
+
+<section class="philosophy" id="experiencia">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">La experiencia</div>
+      <h2>El protagonista sos vos.</h2>
+    </div>
+    <p style="max-width:620px;color:var(--fg-dim);font-size:16px;margin-bottom:8px">Cada corte empieza con una charla, no con la máquina prendida. Así trabajamos:</p>
+    <div class="steps">
+      <div class="step-card">
+        <span class="step-num">01</span>
+        <h3>Escuchamos</h3>
+        <p>Qué buscás, qué nunca te terminó de convencer y qué te gustaría probar esta vez.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">02</span>
+        <h3>Asesoramos</h3>
+        <p>Te decimos qué te queda bien y por qué, con criterio — no a ojo ni por moda.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">03</span>
+        <h3>Ejecutamos</h3>
+        <p>Recién ahí prendemos la máquina. Con tu ok, sin sorpresas de último momento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="gallery-section">
+  <div class="wrap">
+    <div class="gallery-frame">
+      <div class="carousel" id="carousel">
+        <img src="assets/local-1.jpeg" alt="Entrada AMB Barbers">
+        <img src="assets/local-2.jpeg" alt="Interior AMB Barbers">
+        <img src="assets/local-3.jpeg" alt="Estación de espejos AMB Barbers">
+        <img src="assets/local-4.jpeg" alt="Estaciones de corte AMB Barbers">
+        <img src="assets/local-5.jpeg" alt="Silla de barbero AMB Barbers">
+        <img src="assets/local-6.jpeg" alt="Salón AMB Barbers">
+        <img src="assets/local-7.jpeg" alt="AMB Barbers">
+        <img src="assets/local-8.jpeg" alt="AMB Barbers">
+      </div>
+    </div>
+    <div class="carousel-dots" id="carousel-dots"></div>
+  </div>
+</section>
+
+<div class="stripe"></div>
+
+<style>
+  .fidelidad-section{padding:64px 0}
+  .fidelidad-eyebrow{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    color:#d9b36a;letter-spacing:.2em;text-transform:uppercase;font-size:12px;font-weight:600;
+    margin-bottom:18px;
+  }
+  .fidelidad-eyebrow::before,.fidelidad-eyebrow::after{content:'';width:40px;height:1px;background:#3a2f1c}
+  .fidelidad-section h2{
+    font-family:'Bebas Neue',sans-serif;text-align:center;
+    font-size:clamp(34px,7vw,56px);line-height:1.05;letter-spacing:.02em;
+  }
+  .fidelidad-section h2 .gold{color:#d9b36a}
+  .fidelidad-section .sub{
+    text-align:center;max-width:480px;margin:18px auto 40px;color:var(--fg-dim);font-size:15px;line-height:1.7;
+  }
+  .fidelidad-cards{
+    display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:900px;margin:0 auto;
+  }
+  @media(max-width:720px){.fidelidad-cards{grid-template-columns:1fr}}
+
+  /* tarjeta VIP */
+  .vip-card{
+    background:linear-gradient(160deg,#181818 0%,#050403 75%);
+    border:1px solid #3a2f1c;border-radius:20px;padding:28px;
+    display:flex;flex-direction:column;justify-content:space-between;min-height:230px;
+  }
+  .vip-top{display:flex;justify-content:space-between;align-items:flex-start}
+  .vip-label{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.04em;color:#f2ede2}
+  .vip-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.02em;color:#f2ede2;text-align:right;line-height:1.05}
+  .vip-logo .star{color:#d9b36a}
+  .vip-chip-row{display:flex;align-items:center;gap:10px;margin:22px 0}
+  .vip-chip{
+    width:46px;height:34px;border-radius:6px;
+    background:linear-gradient(135deg,#f0d78c,#a9822f 60%,#f0d78c);
+  }
+  .vip-wifi{color:#d9b36a;opacity:.8}
+  .vip-number{font-family:'Work Sans',sans-serif;letter-spacing:.12em;color:#c9beac;font-size:15px;margin-bottom:16px}
+  .vip-bottom{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#a89c86}
+  .vip-bottom .socials{display:flex;gap:14px;align-items:center}
+  .vip-bottom .socials span{display:inline-flex;align-items:center;gap:5px}
+  .vip-cards-icon{display:flex}
+  .vip-cards-icon span{width:18px;height:18px;border-radius:50%;background:#c9a13e;margin-left:-7px;opacity:.85}
+
+  /* tarjeta de progreso */
+  .progress-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:26px;text-align:center;
+  }
+  .progress-eyebrow{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    color:#d9b36a;font-size:12px;font-weight:700;letter-spacing:.1em;margin-bottom:18px;
+  }
+  .progress-eyebrow::before,.progress-eyebrow::after{content:'';width:26px;height:1px;background:#3a2f1c}
+  .progress-dots{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+  .progress-dots .pdot{
+    aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    border:1.5px solid var(--line-strong);color:var(--fg-dim);font-family:'Work Sans',sans-serif;font-size:14px;font-weight:600;
+  }
+  .progress-dots .pdot.activo{
+    border-color:#d9b36a;color:#d9b36a;
+    box-shadow:0 0 0 3px rgba(217,179,106,.18);
+  }
+  .progress-dots .pdot.plata{
+    border-color:#c9cad0;background:linear-gradient(135deg,#eceef2,#a8abb4);
+    color:#1a1a1d;font-weight:700;font-size:12px;
+  }
+  .progress-dots .pdot.dorado{
+    border-color:#d9b36a;background:linear-gradient(135deg,#f0d78c,#a9822f);
+    color:#1a1305;font-weight:700;font-size:12px;
+  }
+  .progress-footer{color:#d9b36a;font-size:11px;font-weight:700;letter-spacing:.04em;line-height:1.6}
+
+  .fidelidad-lock{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    margin-top:28px;color:var(--fg-dim);font-size:13px;
+  }
+</style>
+
+<section class="fidelidad-section">
+  <div class="wrap">
+    <div class="fidelidad-eyebrow">⭐ Tarjeta de fidelidad</div>
+    <h2>3 cortes.<br><span class="gold">Desbloqueás beneficios.</span></h2>
+    <p class="sub">Completá 3 casilleros y accedé a descuentos y beneficios exclusivos.</p>
+
+    <div class="fidelidad-cards">
+      <div class="vip-card">
+        <div class="vip-top">
+          <span class="vip-label">CLIENTE VIP</span>
+          <span class="vip-logo">AMB<br><span class="star">★</span> BARBERS</span>
+        </div>
+        <div class="vip-chip-row">
+          <div class="vip-chip"></div>
+          <svg class="vip-wifi" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 10c5-4.5 11-4.5 16 0M7.5 13.5c3.2-2.7 5.8-2.7 9 0M11 17c1-0.8 2-0.8 3 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div class="vip-number">1234&nbsp;&nbsp;5678&nbsp;&nbsp;9876&nbsp;&nbsp;5432</div>
+        <div class="vip-bottom">
+          <div class="socials">
+            <span>📷 amb_barbers</span>
+            <span>💬 264-3212176</span>
+          </div>
+          <div class="vip-cards-icon"><span></span><span></span></div>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-eyebrow">1/3 CORTES</div>
+        <div class="progress-dots">
+          <span class="pdot activo">1</span>
+          <span class="pdot">2</span>
+          <span class="pdot">3</span>
+          <span class="pdot">4</span>
+          <span class="pdot plata">50%</span>
+          <span class="pdot">6</span>
+          <span class="pdot">7</span>
+          <span class="pdot">8</span>
+          <span class="pdot">9</span>
+          <span class="pdot dorado">100%</span>
+        </div>
+        <div class="progress-footer">AL COMPLETAR LOS 3 CORTES<br>ACCEDÉS A BENEFICIOS EXCLUSIVOS</div>
+      </div>
+    </div>
+
+    <div class="fidelidad-lock">🔒 Se desbloquea automáticamente después de tu tercer corte.</div>
+  </div>
+</section>
+
+<div class="stripe"></div>
+
+<section class="services" id="servicios">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Nuestros servicios</div>
+      <h2>Elegí tu experiencia</h2>
+    </div>
+    <div id="services-list"><!-- se completa desde data.js --></div>
+  </div>
+</section>
+
+<div class="stripe"></div>
+
+
+
+<div class="stripe"></div>
+
+<section class="barbers-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">El equipo</div>
+      <h2>Tu barbero</h2>
+    </div>
+    <div class="barbers">
+      <div class="barber-card">
+        <img src="assets/barbero-sebastian.jpeg" alt="Sebastian">
+        <div class="info"><h3>Sebastian</h3><p>AMB BARBERS ®</p></div>
+      </div>
+      <div class="barber-card">
+        <img src="assets/barbero-ale.jpeg" alt="Ale">
+        <div class="info"><h3>Ale</h3><p>AMB BARBERS ®</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Lo que dicen</div>
+      <h2>Los que vuelven.</h2>
+    </div>
+    <div class="testimonials">
+      <div class="testi-placeholder">Acá van a ir las reseñas de nuestros clientes. Muy pronto.</div>
+    </div>
+  </div>
+</section>
+
+<section class="location-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Encontranos</div>
+      <h2>Ubicación</h2>
+    </div>
+    <div class="location">
+      <div class="details">
+        <p>Calle 9 de Julio, entre Calle Mitre y Av. Ramón Barrera</p>
+        <p>Santa Rosa - 25 de Mayo, San Juan</p>
+
+        <div class="hours" id="hours-list"><!-- se completa desde data.js --></div>
+
+        <a class="btn btn-outline" href="https://www.google.com/maps/dir/?api=1&destination=AMB+BARBER+CREW+San+Juan" target="_blank" rel="noopener">Cómo llegar →</a>
+      </div>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1167.2320628556251!2d-68.31467942738881!3d-31.74550204469777!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x968105f3e733da51%3A0xf9f2771a31c8fe1!2sAMB%20BARBER%20CREW!5e0!3m2!1ses-419!2sar!4v1773556820463!5m2!1ses-419!2sar" loading="lazy"></iframe>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap row">
+    <span>© 2026 AMB BARBERS</span>
+    <div class="socials">
+      <a href="https://www.instagram.com/amb_barbers?igsh=MWtrejcyOGhrdHF5eA%3D%3D&utm_source=qr" target="_blank" rel="noopener"><img src="https://placehold.co/20x20/1c1a17/f2ede2?text=IG" alt="Instagram"></a>
+      <a href="formulario.html"><img src="https://placehold.co/20x20/1c1a17/8fbf7a?text=WA" alt="WhatsApp"></a>
+    </div>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+  // Servicios
+  const list = document.getElementById('services-list');
+  const BADGES = {
+    'corte-lavado': 'AMB ESSENTIAL',
+    'corte-mascarilla': 'AMB NEXT LEVEL',
+    'corte-completo': 'AMB EXCLUSIVE',
+  };
+  SERVICIOS.forEach((s,i)=>{
+    const badge = BADGES[s.id];
+    if (badge) {
+      const badgeWrap = document.createElement('div');
+      badgeWrap.className = 'service-badge-wrap';
+      badgeWrap.innerHTML = `<span class="service-badge">${badge}</span>`;
+      list.appendChild(badgeWrap);
+    }
+    const row = document.createElement('div');
+    row.className = 'service-row' + (badge ? ' has-badge' : '');
+    row.innerHTML = `<span class="num">0${i+1}</span><span class="name">${s.nombre}${s.detalle?`<small>${s.detalle}</small>`:''}</span><span class="meta">${s.precio} · ${s.duracion} min</span>`;
+    list.appendChild(row);
+  });
+
+  // Horarios (usa las mismas constantes de data.js, no se tocan)
+  const NOMBRES_DIA = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const hoursList = document.getElementById('hours-list');
+  for (let d = 1; d <= 7; d++) {
+    const dow = d % 7; // 1..6,0 -> Lunes..Sábado,Domingo
+    const franjasDelDia = HORARIOS_POR_DIA[dow] || [];
+    const abierto = franjasDelDia.length > 0;
+    const textoHorario = abierto
+      ? franjasDelDia.map(f => `${f.apertura} a ${f.cierre}`).join(' y ') + ' hs'
+      : 'Cerrado';
+    const row = document.createElement('div');
+    row.className = 'hours-row' + (abierto ? '' : ' closed');
+    row.innerHTML = `<span class="day">${NOMBRES_DIA[dow]}</span><span class="time">${textoHorario}</span>`;
+    hoursList.appendChild(row);
+  }  // Carrusel de fotos del local: arma los puntos y sincroniza con el scroll
+  const carousel = document.getElementById('carousel');
+  const dotsWrap = document.getElementById('carousel-dots');
+  if (carousel && dotsWrap) {
+    const slides = Array.from(carousel.children);
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `Ver foto ${i + 1}`);
+      dot.addEventListener('click', () => {
+        slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      });
+      dotsWrap.appendChild(dot);
+    });
+    const dots = Array.from(dotsWrap.children);
+
+    const carouselObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = slides.indexOf(entry.target);
+          dots.forEach(d => d.classList.remove('active'));
+          if (dots[idx]) dots[idx].classList.add('active');
+        }
+      });
+    }, { root: carousel, threshold: 0.6 });
+    slides.forEach(s => carouselObserver.observe(s));
+  }
+
+  // Doble clic en el logo → acceso directo al panel de control
+  const brandLink = document.getElementById('brand-link');
+  if (brandLink) {
+    let clickTimer = null;
+    brandLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (clickTimer) {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+        window.location.href = 'panel.html';
+      } else {
+        clickTimer = setTimeout(() => {
+          clickTimer = null;
+          window.location.href = brandLink.getAttribute('href');
+        }, 280);
+      }
+    });
+  }
+</script>
+</body>
+</html>
